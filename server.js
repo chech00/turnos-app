@@ -4,17 +4,23 @@ const axios = require('axios');
 const cors = require('cors');
 const admin = require('firebase-admin');
 
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // ✅ Asegura que solo haya un puerto definido
 
 app.use(express.json());
-app.use(cors()); // Permite peticiones desde el frontend
+app.use(cors()); // ✅ Permite peticiones desde el frontend
 
+// 🔹 Inicializar Firebase con credenciales desde variables de entorno
 const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
+});
 
+const db = admin.firestore();
+const auth = admin.auth();
 
-// Ruta para enviar mensajes de Telegram
+// 📌 Ruta para enviar mensajes con botones a Telegram
 app.post('/send-message', async (req, res) => {
     const { chatId, message, turnoId } = req.body;
 
@@ -45,34 +51,9 @@ app.post('/send-message', async (req, res) => {
     }
 });
 
-
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
-
-// Inicializar Firebase en el backend
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
-});
-
-const db = admin.firestore();
-const auth = admin.auth();
-
-// 📌 Ruta para iniciar sesión con Firebase
-app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await auth.getUserByEmail(email);
-        res.json({ success: true, message: "Login exitoso", uid: user.uid });
-    } catch (error) {
-        res.status(401).json({ success: false, message: "Credenciales incorrectas" });
-    }
-});
-
-
+// 📌 Ruta para manejar las respuestas de los botones de Telegram
 app.post('/webhook-telegram', async (req, res) => {
-    console.log("📩 Recibiendo datos de Telegram:", req.body); // Agregar log para ver toda la información recibida
+    console.log("📩 Recibiendo datos de Telegram:", req.body); // ✅ Para verificar en los logs de Render
 
     const { callback_query } = req.body;
 
@@ -124,5 +105,12 @@ app.post('/webhook-telegram', async (req, res) => {
     res.sendStatus(200);
 });
 
-app.listen(3000, () => console.log("Servidor corriendo en el puerto 3000"));
-module.exports = { auth, db };
+// 📌 Ruta de prueba para verificar si el backend está funcionando
+app.get("/", (req, res) => {
+    res.send("🚀 Backend de Telegram Bot corriendo en Render");
+});
+
+// 🔹 Iniciar el servidor en el puerto correcto
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
