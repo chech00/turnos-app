@@ -21,7 +21,7 @@ const db = admin.firestore();
 const auth = admin.auth();
 
 // 📌 Ruta para enviar mensajes con botones a Telegram
-app.post('/send-message', async (req, res) => {
+app.post('/send-message', async (req, res) => {  // ✅ DEBE SER "post", NO "get"
     const { chatId, message, turnoId } = req.body;
 
     if (!chatId || !message || !turnoId) {
