@@ -564,44 +564,54 @@ function resaltarSemanaActual() {
 // ----------------------
 // 11) AUTOMATIZACIÓN
 // ----------------------
+
+// HORA CONFIGURABLE
+const HORA_ASIGNACION = 1; // Cambia esto a la hora deseada (Formato 24h)
+const MINUTO_ASIGNACION = 58; // Cambia esto a los minutos deseados
+
 function asignacionAutomaticaTurnos() {
   const hoy = new Date();
   const dia = hoy.getDay(); // Lunes=1
   const hora = hoy.getHours();
   const minutos = hoy.getMinutes();
 
-  if (dia === 1 && hora === 7 && minutos === 0) {
+  if (dia === 1 && hora === HORA_ASIGNACION && minutos === MINUTO_ASIGNACION) {
     const semanaIndex = obtenerSemanaActual();
     if (!asignacionesManual.hasOwnProperty(semanaIndex)) {
       semanaActual = semanaIndex;
       asignarTurnos();
-      console.log("Asignación automática de turnos para la semana:", semanaIndex + 1);
+      console.log(`✅ Asignación automática de turnos ejecutada a las ${HORA_ASIGNACION}:${MINUTO_ASIGNACION}`);
     }
   }
 }
 
 function inicializarAutomatizacion() {
   resaltarSemanaActual();
-  setInterval(asignacionAutomaticaTurnos, 60000);
+  setInterval(asignacionAutomaticaTurnos, 60000); // Verifica la hora cada 1 minuto
 
   const hoy = new Date();
   const dia = hoy.getDay();
   const hora = hoy.getHours();
-  if (dia === 1 && hora >= 7) {
+  const minutos = hoy.getMinutes();
+
+  // Verificar si es lunes y si la hora de asignación ya pasó al cargar la página
+  if (dia === 5 && (hora > HORA_ASIGNACION || (hora === HORA_ASIGNACION && minutos >= MINUTO_ASIGNACION))) {
     const semanaIndex = obtenerSemanaActual();
     if (!asignacionesManual.hasOwnProperty(semanaIndex)) {
       semanaActual = semanaIndex;
       asignarTurnos();
-      console.log("Asignación automática de turnos al cargar la página:", semanaIndex + 1);
+      console.log(`✅ Asignación automática de turnos al cargar la página (${HORA_ASIGNACION}:${MINUTO_ASIGNACION})`);
     }
   }
 
+  // Observador para resaltar la semana actual en el calendario
   const calendarBody = document.querySelector("#calendar tbody");
   if (calendarBody) {
     const observer = new MutationObserver(resaltarSemanaActual);
-    observer.observe(calendarBody, { childList:true, subtree:true });
+    observer.observe(calendarBody, { childList: true, subtree: true });
   }
 }
+
 
 // ----------------------
 // 12) BÚSQUEDA POR FECHA
