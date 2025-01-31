@@ -72,14 +72,19 @@ app.post("/login", async (req, res) => {
 
 
 app.post('/webhook-telegram', async (req, res) => {
+    console.log("📩 Recibiendo datos de Telegram:", req.body); // Agregar log para ver toda la información recibida
+
     const { callback_query } = req.body;
 
     if (!callback_query) {
+        console.log("⚠️ No hay callback_query en la solicitud.");
         return res.sendStatus(400);
     }
 
     const chatId = callback_query.message.chat.id;
-    const data = callback_query.data; // Esto puede ser "aceptar_turnoId" o "rechazar_turnoId"
+    const data = callback_query.data; // Ejemplo: "aceptar_12345" o "rechazar_12345"
+
+    console.log(`✅ Callback recibido: ${data}`);
 
     if (data.startsWith("aceptar_")) {
         const turnoId = data.split("_")[1];
@@ -91,14 +96,11 @@ app.post('/webhook-telegram', async (req, res) => {
                 text: `✅ Has aceptado el turno asignado. ¡Gracias!`
             }
         );
-
-        // Aquí podríamos actualizar la base de datos con la asignación del turno
     }
 
     if (data.startsWith("rechazar_")) {
         const turnoId = data.split("_")[1];
 
-        // Enviar mensaje con opciones de rechazo
         await axios.post(
             `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
             {
