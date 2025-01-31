@@ -1,0 +1,157 @@
+
+:root {
+    --color-fondo-principal: #181818;
+    --color-fondo-secundario: rgba(255, 255, 255, 0.2);
+    --color-texto-principal: #e5e5e5;
+    --color-texto-secundario: #aaaaaa;
+    --color-acento-primario: #11689c;
+    --color-acento-secundario: #303030;
+}
+
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #11689c, #181818);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-texto-principal);
+}
+
+.recover-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.recover-container h2 {
+    color: var(--color-acento-primario);
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.recover-container p {
+    font-size: 1rem;
+    color: var(--color-texto-secundario);
+    margin-bottom: 2rem;
+}
+
+.recover-container .form-group {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.recover-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--color-texto-principal);
+}
+
+.recover-container input {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-texto-secundario);
+    border-radius: 5px;
+    background: var(--color-fondo-principal);
+    color: var(--color-texto-principal);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recover-container input:focus {
+    outline: none;
+    border-color: var(--color-acento-primario);
+    box-shadow: 0 0 5px rgba(17, 104, 156, 0.5);
+}
+
+.recover-container button {
+    background: var(--color-acento-primario);
+    color: var(--color-fondo-principal);
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    filter: brightness(2.0);
+}
+
+.recover-container button:hover {
+    background: var(--color-acento-secundario);
+    transform: translateY(-2px);
+}
+
+.recover-container a {
+    color: var(--color-acento-primario);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.recover-container a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #ff5252;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.success-message {
+    color: #4caf50;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid var(--color-acento-primario);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    display: none;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@media (max-width: 480px) {
+    .recover-container {
+      padding: 1rem;
+    }
+    .recover-container h2 {
+      font-size: 1.5rem;
+    }
+    .recover-container button {
+      font-size: 1rem;
+      padding: 0.6rem 1.5rem;
+    }
+  }
+  .recover-container button:focus,
+.recover-container a:focus {
+    outline: 2px solid var(--color-acento-primario);
+    outline-offset: 2px;
+}
+.error-message, .success-message {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.error-message.visible, .success-message.visible {
+    opacity: 1;
+}
