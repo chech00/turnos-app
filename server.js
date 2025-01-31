@@ -3,8 +3,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const admin = require('firebase-admin');
-const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
-
+const serviceAccount = require("./serviceAccountKey.json");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,14 +11,12 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors()); // Permite peticiones desde el frontend
 
-const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN;
-
 // Ruta para enviar mensajes de Telegram
 app.post('/send-message', async (req, res) => {
-    const { chatId, message } = req.body;
+    const { chatId, message, turnoId } = req.body;
 
-    if (!chatId || !message) {
-        return res.status(400).json({ error: "Faltan chatId o message" });
+    if (!chatId || !message || !turnoId) {
+        return res.status(400).json({ error: "Faltan chatId, message o turnoId" });
     }
 
     try {
@@ -27,7 +24,15 @@ app.post('/send-message', async (req, res) => {
             `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
             {
                 chat_id: chatId,
-                text: message
+                text: message,
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            { text: "✅ Aceptar", callback_data: `aceptar_${turnoId}` },
+                            { text: "❌ Rechazar", callback_data: `rechazar_${turnoId}` }
+                        ]
+                    ]
+                }
             }
         );
 
@@ -36,6 +41,7 @@ app.post('/send-message', async (req, res) => {
         res.status(500).json({ error: "Error enviando mensaje", details: error.response.data });
     }
 });
+
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
@@ -62,43 +68,56 @@ app.post("/login", async (req, res) => {
 });
 
 
-// 📌 Función para enviar mensaje con botones interactivos
-async function enviarMensajeConBotones(chatId) {
-    const messageText = "Tienes un nuevo turno asignado. ¿Quieres aceptarlo?";
-    
-    const options = {
-        chat_id: chatId,
-        text: messageText,
-        reply_markup: {
-            inline_keyboard: [
-                [
-                    { text: "✅ Aceptar", callback_data: "aceptar_turno" },
-                    { text: "❌ Rechazar", callback_data: "rechazar_turno" }
-                ]
-            ]
-        }
-    };
+app.post('/webhook-telegram', async (req, res) => {
+    const { callback_query } = req.body;
 
-    try {
-        const response = await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, options);
-        console.log("Mensaje enviado:", response.data);
-    } catch (error) {
-        console.error("Error enviando mensaje:", error.response?.data || error.message);
-    }
-}
-
-// 📌 Ruta para probar enviar el mensaje con botones
-app.post('/send-shift-message', async (req, res) => {
-    const { chatId } = req.body;
-
-    if (!chatId) {
-        return res.status(400).json({ error: "Falta el chatId" });
+    if (!callback_query) {
+        return res.sendStatus(400);
     }
 
-    await enviarMensajeConBotones(chatId);
-    res.json({ success: true, message: "Mensaje enviado con éxito." });
+    const chatId = callback_query.message.chat.id;
+    const data = callback_query.data; // Esto puede ser "aceptar_turnoId" o "rechazar_turnoId"
+
+    if (data.startsWith("aceptar_")) {
+        const turnoId = data.split("_")[1];
+
+        await axios.post(
+            `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
+            {
+                chat_id: chatId,
+                text: `✅ Has aceptado el turno asignado. ¡Gracias!`
+            }
+        );
+
+        // Aquí podríamos actualizar la base de datos con la asignación del turno
+    }
+
+    if (data.startsWith("rechazar_")) {
+        const turnoId = data.split("_")[1];
+
+        // Enviar mensaje con opciones de rechazo
+        await axios.post(
+            `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
+            {
+                chat_id: chatId,
+                text: "⚠️ Has rechazado el turno. Selecciona un motivo:",
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            { text: "🏖️ Vacaciones", callback_data: `motivo_vacaciones_${turnoId}` },
+                            { text: "🩺 Licencia", callback_data: `motivo_licencia_${turnoId}` }
+                        ],
+                        [
+                            { text: "📌 Motivos Personales", callback_data: `motivo_personal_${turnoId}` }
+                        ]
+                    ]
+                }
+            }
+        );
+    }
+
+    res.sendStatus(200);
 });
-
 
 app.listen(3000, () => console.log("Servidor corriendo en el puerto 3000"));
 module.exports = { auth, db };
