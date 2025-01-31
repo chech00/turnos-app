@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/docs/css/login.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-image"></div>
+    <div class="login-content">
+      <div class="logo">
+        <img src="https://i.ibb.co/HqrX2cr/LOGO-COLOR-2-SLOGAN-768x185.png" alt="Logo">
+      </div>
+
+
+      
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <input type="email" id="email" placeholder="Correo Electrónico" required>
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" placeholder="Contraseña" required>
+        </div>
+        <a href="recuperar.html" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        <button type="submit" class="btn-primary">Iniciar Sesión</button>
+        <p id="error-message" class="error-message"></p>
+      </form>
+
+      <!-- Sección de redes sociales -->
+      <div class="social-links">
+        <a href="https://www.instagram.com/patagonia_ip/" target="_blank" aria-label="Instagram">
+          <img src="   https://cdn-icons-png.flaticon.com/512/1384/1384031.png " alt="Instagram">
+        </a>
+        <a href="https://www.facebook.com/?stype=lo&flo=1&deoia=1&jlou=Aff-ggZpiXHpCURM-No4i7qVnxMnaXbJSJOzYNzA4_Ln1P2eqQnKq9HmBbx40b1NAZ3Ca9g4kH4MepFGXexBEFUl&smuh=25909&lh=Ac8Cd9imdHCvT83fXrE" target="_blank" aria-label="Facebook">
+          <img src="https://cdn-icons-png.flaticon.com/512/747/747374.png" alt="Facebook">
+        </a>
+        <a href="https://x.com/?logout=1737246629504" target="_blank" aria-label="Twitter">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/640px-X_logo_2023.svg.png" alt="Twitter">
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="/docs/js/login.js"></script>
+</body>
+</html>

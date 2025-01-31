@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vista de Usuario</title>
+  <link rel="stylesheet" href="/docs/css/user.css">
+</head>
+<body>
+  <header class="header">
+    <h1>Vista de Usuario</h1>
+    <div class="logo-container">
+        <img src="https://i.ibb.co/HqrX2cr/LOGO-COLOR-2-SLOGAN-768x185.png" alt="Logo de la Empresa" class="logo" />
+      </div>
+      <p id="welcome-message" class="welcome-message">¡Bienvenido, [nombre o correo]!</p>
+    </div>
+    <button id="logout-btn" class="primary-btn">Cerrar sesión</button>
+  </header>
+
+  <main>
+    <!-- Contenedor del calendario -->
+    <section class="calendar-container">
+      <div class="calendar-header">
+        <button id="prev-month" class="primary-btn">&laquo; Mes Anterior</button>
+        <h2 id="calendar-title"></h2>
+        <button id="next-month" class="primary-btn">Mes Siguiente &raquo;</button>
+      </div>
+      <table id="calendar">
+        <thead>
+          <tr>
+            <th>Lunes</th>
+            <th>Martes</th>
+            <th>Miércoles</th>
+            <th>Jueves</th>
+            <th>Viernes</th>
+            <th>Sábado</th>
+            <th>Domingo</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <!-- Contenedor de botones para cambiar vistas -->
+    <section id="linear-view" class="linear-container" style="display: none;">
+      <h2 id="linear-title">Agenda de Turnos</h2>
+      <ul id="linear-list"></ul>
+    </section>
+    
+    <section class="botones-contenedor">
+      <button id="calendar-view-btn" class="primary-btn">Vista Calendario</button>
+      <button id="linear-view-btn" class="primary-btn">Vista Lineal</button>
+    </section>
+
+    <!-- Sección de búsqueda de turnos -->
+    <section id="search-section" class="search-section">
+      <h2>Buscar Turno</h2>
+      <input type="date" id="search-date" class="search-input">
+      <button id="search-button" class="primary-btn">Buscar</button>
+      <div id="search-result" class="search-result"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 PatagoniaIP SpA - Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      const logoutBtn = document.getElementById("logout-btn");
+      const calendarViewBtn = document.getElementById("calendar-view-btn");
+      const linearViewBtn = document.getElementById("linear-view-btn");
+      const searchButton = document.getElementById("search-button");
+
+      // Mostrar mensaje de bienvenida
+      function mostrarBienvenida(user) {
+        const welcomeMessage = document.getElementById("welcome-message");
+        if (welcomeMessage) {
+          welcomeMessage.textContent = `¡Bienvenido, ${user.email}!`;
+        }
+      }
+
+      // Inicializar vista del usuario
+      function inicializarVistaUsuario() {
+        console.log("Inicializando la vista del usuario...");
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        document.getElementById("prev-month").addEventListener("click", () => {
+          currentMonth--;
+          if (currentMonth < 0) {
+              currentMonth = 11;
+              currentYear--;
+          }
+          generarCalendario(currentMonth, currentYear);
+          cargarAsignacionesGuardadas(currentMonth, currentYear);
+        });
+
+        document.getElementById("next-month").addEventListener("click", () => {
+          currentMonth++;
+          if (currentMonth > 11) {
+              currentMonth = 0;
+              currentYear++;
+          }
+          generarCalendario(currentMonth, currentYear);
+          cargarAsignacionesGuardadas(currentMonth, currentYear);
+        });
+
+        try {
+          generarCalendario(currentMonth, currentYear);
+          configurarBotonesCalendario();
+
+          calendarViewBtn.addEventListener("click", () => {
+            document.querySelector(".calendar-container").style.display = "block";
+            document.querySelector(".linear-container").style.display = "none";
+          });
+
+          linearViewBtn.addEventListener("click", () => {
+            document.querySelector(".calendar-container").style.display = "none";
+            document.querySelector(".linear-container").style.display = "block";
+            generarVistaLineal();
+          });
+
+          searchButton.addEventListener("click", () => {
+            const searchDate = document.getElementById("search-date").value;
+            buscarTurnoPorFecha(searchDate);
+          });
+        } catch (error) {
+          console.error("Error al inicializar la vista del usuario:", error);
+        }
+      }
+
+      // Verificar autenticación y rol del usuario
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          console.warn("Usuario no autenticado, redirigiendo al login.");
+          window.location.href = "login.html";
+          return;
+        }
+
+        try {
+          const userDoc = await db.collection("userRoles").doc(user.uid).get();
+          if (!userDoc.exists) {
+            console.error(`No se encontró un documento de rol para el usuario: ${user.uid}`);
+            alert("No tienes un rol asignado. Contacta al administrador.");
+            auth.signOut();
+            window.location.href = "login.html";
+            return;
+          }
+
+          const userData = userDoc.data();
+          const userRole = userData.rol;
+
+          if (userRole !== "user") {
+            console.warn(`Rol no autorizado (${userRole}), cerrando sesión.`);
+            alert("Rol no autorizado para este usuario.");
+            auth.signOut();
+            window.location.href = "login.html";
+            return;
+          }
+
+          console.log("Usuario autenticado con rol válido:", user.email);
+          mostrarBienvenida(user); // Mostrar mensaje de bienvenida
+          inicializarVistaUsuario(); // Inicializar vista
+        } catch (error) {
+          console.error("Error en la verificación del usuario:", error.message);
+          alert("Hubo un problema con tu cuenta. Por favor, contacta al administrador.");
+          auth.signOut();
+          window.location.href = "login.html";
+        }
+      });
+
+      // Logout
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          auth.signOut()
+            .then(() => {
+              console.log("Sesión cerrada.");
+              window.location.href = "login.html";
+            })
+            .catch((error) => {
+              console.error("Error al cerrar sesión:", error);
+            });
+        });
+      }
+    });
+  </script>
+  <script src="/docs/js/script.js"></script>
+  
+</body>
+</html>
