@@ -370,8 +370,12 @@ Planta: ${turnosSemana.planta}`;
 
 function sendTelegramNotification(employeeName, message) {
   const chatId = employeesTelegram[employeeName];
+
+  console.log(`📢 Intentando enviar mensaje a ${employeeName} con chatId: ${chatId}`);
+  console.log(`📨 Mensaje: ${message}`);
+
   if (!chatId) {
-    console.error(`No se encontró chat ID para ${employeeName}`);
+    console.error(`🚨 ERROR: No se encontró chat ID para ${employeeName}`);
     return;
   }
 
@@ -381,14 +385,16 @@ function sendTelegramNotification(employeeName, message) {
     body: JSON.stringify({ chatId, message })
   })
   .then(response => response.json())
-  .then(data => console.log(`Mensaje enviado a ${employeeName}:`, data))
-  .catch(error => console.error(`Error enviando mensaje a ${employeeName}:`, error));
+  .then(data => console.log(`✅ Mensaje enviado a ${employeeName}:`, data))
+  .catch(error => console.error(`🚨 Error enviando mensaje a ${employeeName}:`, error));
 }
 
-
 function sendTelegramNotificationConChatId(chatId, message) {
+  console.log(`📢 Intentando enviar mensaje con chatId: ${chatId}`);
+  console.log(`📨 Mensaje: ${message}`);
+
   if (!chatId) {
-    console.error("El chatId es requerido para enviar el mensaje.");
+    console.error("🚨 ERROR: El chatId es requerido para enviar el mensaje.");
     return;
   }
 
@@ -398,8 +404,8 @@ function sendTelegramNotificationConChatId(chatId, message) {
     body: JSON.stringify({ chatId, message })
   })
   .then(response => response.json())
-  .then(data => console.log(`Mensaje enviado al chat ${chatId}:`, data))
-  .catch(error => console.error(`Error enviando mensaje al chat ${chatId}:`, error));
+  .then(data => console.log(`✅ Mensaje enviado al chat ${chatId}:`, data))
+  .catch(error => console.error(`🚨 Error enviando mensaje al chat ${chatId}:`, error));
 }
 
 // ----------------------
