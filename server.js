@@ -3,7 +3,8 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const admin = require('firebase-admin');
-const serviceAccount = require("./serviceAccountKey.json");
+const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
