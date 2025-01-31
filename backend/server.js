@@ -26,6 +26,8 @@ app.post('/send-message', async (req, res) => {
             }
         );
 
+
+        
         res.json({ success: true, response: response.data });
     } catch (error) {
         res.status(500).json({ error: "Error enviando mensaje", details: error.response.data });
