@@ -14,10 +14,10 @@ app.use(cors()); // Permite peticiones desde el frontend
 
 // Ruta para enviar mensajes de Telegram
 app.post("/send-message", async (req, res) => {
-    const { chatId, message } = req.body;
+    const { chatId, message, turnoId } = req.body;
 
     if (!chatId || !message) {
-        return res.status(400).json({ error: "Faltan chatId o message" });
+        return res.status(400).json({ error: "Faltan chatId, message o turnoId" });
     }
 
     const url = `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`;
