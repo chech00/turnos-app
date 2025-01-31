@@ -6,7 +6,7 @@ const admin = require('firebase-admin');
 const serviceAccount = require("./serviceAccountKey.json");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(cors()); // Permite peticiones desde el frontend
@@ -119,5 +119,5 @@ app.post('/webhook-telegram', async (req, res) => {
     res.sendStatus(200);
 });
 
-app.listen(3000, () => console.log("Servidor corriendo en el puerto 3000"));
+app.listen(3000, () => console.log("Servidor corriendo en el puerto 3001"));
 module.exports = { auth, db };
