@@ -371,23 +371,25 @@ Planta: ${turnosSemana.planta}`;
 function sendTelegramNotification(employeeName, message) {
   const chatId = employeesTelegram[employeeName];
 
-  console.log(`📢 Intentando enviar mensaje a ${employeeName} con chatId: ${chatId}`);
-  console.log(`📨 Mensaje: ${message}`);
+  console.log("📢 Intentando enviar mensaje a:", employeeName);
+  console.log("📨 Mensaje:", message);
+  console.log("📬 chatId:", chatId);
 
   if (!chatId) {
-    console.error(`🚨 ERROR: No se encontró chat ID para ${employeeName}`);
-    return;
+      console.error("🚨 ERROR: No se encontró chat ID para", employeeName);
+      return;
   }
 
   fetch("https://turnos-app-8viu.onrender.com/send-message", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chatId, message })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chatId, message })
   })
   .then(response => response.json())
-  .then(data => console.log(`✅ Mensaje enviado a ${employeeName}:`, data))
-  .catch(error => console.error(`🚨 Error enviando mensaje a ${employeeName}:`, error));
+  .then(data => console.log("✅ Respuesta de Telegram:", data))
+  .catch(error => console.error("🚨 Error enviando mensaje:", error));
 }
+
 
 function sendTelegramNotificationConChatId(chatId, message) {
   console.log(`📢 Intentando enviar mensaje con chatId: ${chatId}`);
