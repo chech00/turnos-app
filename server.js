@@ -53,7 +53,7 @@ app.post('/send-message', async (req, res) => {  // ✅ DEBE SER "post", NO "get
 
 // 📌 Ruta para manejar las respuestas de los botones de Telegram
 app.post('/webhook-telegram', async (req, res) => {
-    console.log("📩 Recibiendo datos de Telegram:", req.body); // ✅ Para verificar en los logs de Render
+    console.log("📩 Recibiendo datos de Telegram:", req.body);
 
     const { callback_query } = req.body;
 
@@ -63,6 +63,7 @@ app.post('/webhook-telegram', async (req, res) => {
     }
 
     const chatId = callback_query.message.chat.id;
+    const userId = callback_query.from.id; // ID del usuario que responde
     const data = callback_query.data; // Ejemplo: "aceptar_12345" o "rechazar_12345"
 
     console.log(`✅ Callback recibido: ${data}`);
@@ -70,41 +71,28 @@ app.post('/webhook-telegram', async (req, res) => {
     if (data.startsWith("aceptar_")) {
         const turnoId = data.split("_")[1];
 
-        await axios.post(
-            `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
-            {
-                chat_id: chatId,
-                text: `✅ Has aceptado el turno asignado. ¡Gracias!`
-            }
-        );
-    }
+        try {
+            // Guardar en Firebase
+            await db.collection("turnos").doc(turnoId).set({
+                estado: "Asignado",
+                usuario: userId,
+                timestamp: admin.firestore.FieldValue.serverTimestamp()
+            });
 
-    if (data.startsWith("rechazar_")) {
-        const turnoId = data.split("_")[1];
-
-        await axios.post(
-            `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
-            {
-                chat_id: chatId,
-                text: "⚠️ Has rechazado el turno. Selecciona un motivo:",
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            { text: "🏖️ Vacaciones", callback_data: `motivo_vacaciones_${turnoId}` },
-                            { text: "🩺 Licencia", callback_data: `motivo_licencia_${turnoId}` }
-                        ],
-                        [
-                            { text: "📌 Motivos Personales", callback_data: `motivo_personal_${turnoId}` }
-                        ]
-                    ]
+            await axios.post(
+                `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: `✅ Turno asignado correctamente. ¡Gracias por confirmar!`
                 }
-            }
-        );
+            );
+        } catch (error) {
+            console.error("🔥 Error al guardar en Firebase:", error);
+        }
     }
 
     res.sendStatus(200);
 });
-
 // 📌 Ruta de prueba para verificar si el backend está funcionando
 app.get("/", (req, res) => {
     res.send("🚀 Backend de Telegram Bot corriendo en Render");
