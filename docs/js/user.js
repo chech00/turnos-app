@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const db = firebase.firestore();
   const auth = firebase.auth();
   
-  let esAdmin = false; // Variable global para saber si es admin
+  let esAdmin = false; 
   
   function verificarRolUsuario() {
     auth.onAuthStateChanged(async (user) => {

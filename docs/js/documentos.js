@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // =============================
     //  Configuración de Cloudinary
     // =============================
-    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dqaszkagj/upload"; // Reemplaza TU_CLOUD_NAME
-    const UPLOAD_PRESET = "documentos_noc"; // Asegúrate de que esté bien configurado en Cloudinary
+    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dqaszkagj/upload"; 
+    const UPLOAD_PRESET = "documentos_noc"; // 
 
     // ------------------------------
     // Autenticación de usuario y validación de rol

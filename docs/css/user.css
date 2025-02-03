@@ -1,16 +1,16 @@
 :root {
-  --color-fondo-principal: #1B1F23; /* Azul grisáceo oscuro, profesional y elegante */
-  --color-fondo-secundario: #23272E; /* Un gris profundo con matices azulados */
-  --color-texto-principal: #E3E6EB; /* Blanco ahumado, suave y cómodo para la vista */
-  --color-texto-secundario: #A1A9B5; /* Gris azulado apagado, sin demasiado contraste */
+  --color-fondo-principal: #1B1F23; 
+  --color-fondo-secundario: #23272E;
+  --color-texto-principal: #E3E6EB; 
+  --color-texto-secundario: #A1A9B5; 
 
-  --color-acento-primario: #7796CB; /* Azul pastel elegante, suave y moderno */
-  --color-acento-secundario: #35383B; /* Gris oscuro equilibrado */
-  --color-detalle: #C3D0E8; /* Celeste apagado, aporta luz sin ser estridente */
+  --color-acento-primario: #7796CB; 
+  --color-acento-secundario: #35383B; 
+  --color-detalle: #C3D0E8; 
 
-  --color-error: #D77A7A; /* Rojo terracota suave, no agresivo */
-  --color-exito: #88C0A6; /* Verde menta natural y relajante */
-  --color-advertencia: #E8C27E; /* Amarillo dorado, aporta contraste sin ser molesto */
+  --color-error: #D77A7A; 
+  --color-exito: #88C0A6; 
+  --color-advertencia: #E8C27E; 
 
   --font-primary: 'Inter', sans-serif;
   --font-secondary: 'Mulish', sans-serif;

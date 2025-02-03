@@ -27,7 +27,7 @@ let usuarioEsAdmin = false;
 function verificarRolUsuario() {
   auth.onAuthStateChanged((user) => {
     if (!user) {
-      // Si no está autenticado, redirigir a login
+    
       window.location.href = "login.html";
       return;
     }

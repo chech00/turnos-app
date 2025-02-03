@@ -27,7 +27,7 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
     const user = userCredential.user;
     console.log("Usuario autenticado:", user);
 
-    // Limpiar mensaje de error en caso de éxito
+    
     errorMessageElement.style.display = "none";
     errorMessageElement.textContent = "";
 
