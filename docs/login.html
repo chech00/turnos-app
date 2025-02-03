@@ -4,17 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
+  <!-- Google Fonts para una tipografía moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/login.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <div class="login-container">
+    <!-- Lado izquierdo con imagen -->
     <div class="login-image"></div>
+    <!-- Lado derecho con formulario -->
     <div class="login-content">
       <div class="logo">
         <img src="https://i.ibb.co/HqrX2cr/LOGO-COLOR-2-SLOGAN-768x185.png" alt="Logo">
       </div>
-
-
 
       <form id="login-form" class="login-form">
         <div class="form-group">
@@ -23,7 +26,15 @@
         <div class="form-group">
           <input type="password" id="password" placeholder="Contraseña" required>
         </div>
-        <a href="recuperar.html" class="forgot-password">¿Olvidaste tu contraseña?</a>
+
+        <div class="remember-forgot-container">
+          <div class="remember-me">
+            <input type="checkbox" id="remember-me">
+            <label for="remember-me">Mantener sesión iniciada</label>
+          </div>
+          <a href="recuperar.html" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </div>
+
         <button type="submit" class="btn-primary">Iniciar Sesión</button>
         <p id="error-message" class="error-message"></p>
       </form>
@@ -31,22 +42,23 @@
       <!-- Sección de redes sociales -->
       <div class="social-links">
         <a href="https://www.instagram.com/patagonia_ip/" target="_blank" aria-label="Instagram">
-          <img src="   https://cdn-icons-png.flaticon.com/512/1384/1384031.png " alt="Instagram">
+          <img src="https://cdn-icons-png.flaticon.com/512/1384/1384031.png" alt="Instagram">
         </a>
-        <a href="https://www.facebook.com/?stype=lo&flo=1&deoia=1&jlou=Aff-ggZpiXHpCURM-No4i7qVnxMnaXbJSJOzYNzA4_Ln1P2eqQnKq9HmBbx40b1NAZ3Ca9g4kH4MepFGXexBEFUl&smuh=25909&lh=Ac8Cd9imdHCvT83fXrE" target="_blank" aria-label="Facebook">
+        <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
           <img src="https://cdn-icons-png.flaticon.com/512/747/747374.png" alt="Facebook">
         </a>
-        <a href="https://x.com/?logout=1737246629504" target="_blank" aria-label="Twitter">
+        <a href="https://x.com/" target="_blank" aria-label="Twitter">
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/640px-X_logo_2023.svg.png" alt="Twitter">
         </a>
       </div>
-
     </div>
   </div>
 
+  <!-- Scripts de Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <!-- Nuestro script -->
   <script src="./js/login.js"></script>
 </body>
 </html>

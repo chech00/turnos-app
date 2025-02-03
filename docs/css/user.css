@@ -1,19 +1,23 @@
 :root {
-    --color-fondo-principal: #181818;
-         --color-fondo-secundario: #202020;
-         --color-texto-principal: #e5e5e5;
-         --color-texto-secundario: #aaaaaa;
-         --color-acento-primario: #11689c;
-         --color-acento-secundario: #303030;
-         --color-error: #ff5252;
-         --color-exito: #4caf50;
-         --color-advertencia: #ffb300;
-    
-     
-     --font-primary: 'Roboto', sans-serif;
-     --font-secondary: 'Montserrat', sans-serif;
-     --transition-speed: 0.3s;
-   }
+  --color-fondo-principal: #1B1F23; /* Azul grisáceo oscuro, profesional y elegante */
+  --color-fondo-secundario: #23272E; /* Un gris profundo con matices azulados */
+  --color-texto-principal: #E3E6EB; /* Blanco ahumado, suave y cómodo para la vista */
+  --color-texto-secundario: #A1A9B5; /* Gris azulado apagado, sin demasiado contraste */
+
+  --color-acento-primario: #7796CB; /* Azul pastel elegante, suave y moderno */
+  --color-acento-secundario: #35383B; /* Gris oscuro equilibrado */
+  --color-detalle: #C3D0E8; /* Celeste apagado, aporta luz sin ser estridente */
+
+  --color-error: #D77A7A; /* Rojo terracota suave, no agresivo */
+  --color-exito: #88C0A6; /* Verde menta natural y relajante */
+  --color-advertencia: #E8C27E; /* Amarillo dorado, aporta contraste sin ser molesto */
+
+  --font-primary: 'Inter', sans-serif;
+  --font-secondary: 'Mulish', sans-serif;
+  --transition-speed: 0.3s;
+}
+
+
    
         .error-message {
      color: var(--color-error);
@@ -118,7 +122,7 @@
        header img.logo {
          width: 180px;
          height: auto;
-         filter: brightness(2.0);
+         filter: brightness(2.5);
          
        }
        
@@ -964,10 +968,6 @@
     gap: 1rem;
   }
   
-  
-  
-  
-  
   td.pendiente {
     background-color: var(--color-error);
     color: #fff;
@@ -982,4 +982,135 @@
       box-shadow: 0 0 15px var(--color-error);
     }
   }
-  
+ /* Sidebar */
+.sidebar {
+  position: fixed;
+  left: -260px;
+  top: 0;
+  width: 250px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--color-fondo-secundario), #252525);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem;
+  color: var(--color-texto-principal);
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+/* Header del sidebar */
+.sidebar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+}
+
+/* Logo dentro del sidebar */
+.logo-sidebar {
+  width: 160px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Menú del sidebar */
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.sidebar-menu ul li {
+  padding: 0.8rem 1rem;
+}
+
+.sidebar-menu ul li a {
+  text-decoration: none;
+  color: var(--color-texto-principal);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar-menu ul li a:hover {
+  background: var(--color-acento-secundario);
+  transform: scale(1.05);
+}
+
+/* Iconos en el sidebar */
+[data-lucide] {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.2;
+}
+
+/* Botón de Cerrar sesión */
+.logout-btn {
+  margin-top: auto;
+  width: 90%;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  font-size: 1rem;
+  background: var(--color-error);
+  color: #fff;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.logout-btn:hover {
+  background: #d32f2f;
+}
+
+/* Botón de menú hamburguesa */
+.menu-btn {
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  color: var(--color-texto-principal);
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.menu-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* Ajuste del contenido cuando el sidebar está abierto */
+.main-content {
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 0;
+}
+
+.main-content.shift {
+  margin-left: 250px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content.shift {
+    margin-left: 0;
+  }
+
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+}

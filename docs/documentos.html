@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentos Noc</title>
+  <!-- CSS General -->
+  <link rel="stylesheet" href="./css/user.css">
+  <!-- CSS específico para la sección Documentos -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="./css/documentos.css">
+  <!-- Librería de iconos Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Firebase (app, auth, firestore, storage) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+  <!-- Configuración de Firebase (coloca aquí tu configuración si aún no la tienes en un archivo común) -->
+  <script>
+    // Ejemplo de configuración (reemplaza con la tuya)
+  </script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <img src="https://i.ibb.co/HqrX2cr/LOGO-COLOR-2-SLOGAN-768x185.png" alt="Logo de la Empresa" class="logo-sidebar">
+    </div>
+    <nav class="sidebar-menu">
+        <ul>
+          <li><a href="index.html" id="menu-turnos"><i data-lucide="calendar"></i> Turnos</a></li>
+          <li><a href="senales.html" id="menu-fibra"><i data-lucide="waypoints"></i> Señal de Fibra</a></li>
+          <li><a href="documentos.html" id="menu-doc"><i data-lucide="dock"></i> Documentos Noc</a></li>
+        </ul>
+      </nav>
+    <button id="logout-btn" class="primary-btn logout-btn">
+      <i data-lucide="log-out"></i> Cerrar sesión
+    </button>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div id="main-content" class="main-content">
+    <header>
+      <button id="menu-toggle" class="menu-btn">
+        <i data-lucide="panel-left"></i>
+      </button>
+      <h1>Documentos Noc</h1>
+      
+    </header>
+
+    <main>
+      <!-- Sección de subida de archivos (visible solo para admin) -->
+      <section id="upload-section" style="display: none;">
+        <h2>Subir Nuevo Archivo</h2>
+        <div id="upload-area" style="border: 2px dashed #3498db; padding: 20px; cursor: pointer;">
+            <p>Haz clic aquí para seleccionar un archivo</p>
+        </div>
+        <input type="file" id="file-input" accept="*/*" style="display: none;">
+        <button id="upload-btn">Subir Archivo</button>
+    </section>
+      
+      <!-- Sección de archivos -->
+      <section id="files-section">
+        <h2>Archivos Disponibles</h2>
+        <ul id="files-list"></ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 PatagoniaIP SpA - Todos los derechos reservados.</p>
+    </footer>
+  </div>
+
+  <!-- Archivo JavaScript para la funcionalidad de Documentos Noc y el sidebar -->
+  <script src="./js/documentos.js"></script>
+  <script>
+    // Inicializar iconos de Lucide
+    lucide.createIcons();
+  </script>
+</body>
+</html>

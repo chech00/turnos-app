@@ -5,17 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vista de Usuario</title>
   <link rel="stylesheet" href="./css/user.css">
+  <script src="https://unpkg.com/lucide@latest"></script> <!-- Librería de iconos modernos -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <header class="header">
-    <h1>Vista de Usuario</h1>
-    <div class="logo-container">
-        <img src="https://i.ibb.co/HqrX2cr/LOGO-COLOR-2-SLOGAN-768x185.png" alt="Logo de la Empresa" class="logo" />
-      </div>
-      <p id="welcome-message" class="welcome-message">¡Bienvenido, [nombre o correo]!</p>
-    </div>
-    <button id="logout-btn" class="primary-btn">Cerrar sesión</button>
+  <!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <img src="https://i.ibb.co/HqrX2cr/LOGO-COLOR-2-SLOGAN-768x185.png" alt="Logo de la Empresa" class="logo-sidebar" />
+  </div>
+
+  <nav class="sidebar-menu">
+    <ul>
+      <li><a href="index.html" id="menu-turnos"><i data-lucide="calendar"></i> Turnos</a></li>
+      <li><a href="senales.html" id="menu-fibra"><i data-lucide="waypoints"></i> Señal de Fibra</a></li>
+      <li><a href="documentos.html" id="menu-doc"><i data-lucide="dock"></i> Documentos Noc</a></li>
+    </ul>
+  </nav>
+
+  <button id="logout-btn" class="primary-btn logout-btn">
+    <i data-lucide="log-out"></i> Cerrar sesión
+  </button>
+</div>
+<!-- Contenido Principal -->
+<div id="main-content" class="main-content">
+  <header>
+    <button id="menu-toggle" class="menu-btn">
+      <i data-lucide="panel-left"></i>
+    </button>
+    <h1>Vista Usuario</h1>
+    <p id="welcome-message" class="welcome-message">Bienvenido, [nombre o correo]</p>
   </header>
+  
 
   <main>
     <!-- Contenedor del calendario -->
@@ -69,6 +90,8 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const auth = firebase.auth();
@@ -194,6 +217,5 @@
     });
   </script>
   <script src="./js/script.js"></script>
-
 </body>
 </html>

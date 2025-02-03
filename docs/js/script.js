@@ -18,6 +18,7 @@ const db = firebase.firestore();
 const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
 const secondaryAuth = secondaryApp.auth();
 
+
 // ----------------------
 // 2) VARIABLES GLOBALES
 // ----------------------
@@ -574,8 +575,8 @@ function resaltarSemanaActual() {
 // ----------------------
 
 // HORA CONFIGURABLE
-const HORA_ASIGNACION = 2; // Cambia esto a la hora deseada (Formato 24h)
-const MINUTO_ASIGNACION = 20; // Cambia esto a los minutos deseados
+const HORA_ASIGNACION = 0; // Cambia esto a la hora deseada (Formato 24h)
+const MINUTO_ASIGNACION = 47; // Cambia esto a los minutos deseados
 
 function asignacionAutomaticaTurnos() {
   const hoy = new Date();
@@ -583,7 +584,7 @@ function asignacionAutomaticaTurnos() {
   const hora = hoy.getHours();
   const minutos = hoy.getMinutes();
 
-  if (dia === 5 && hora === HORA_ASIGNACION && minutos === MINUTO_ASIGNACION) {
+  if (dia === 1 && hora === HORA_ASIGNACION && minutos === MINUTO_ASIGNACION) {
     const semanaIndex = obtenerSemanaActual();
     if (!asignacionesManual.hasOwnProperty(semanaIndex)) {
       semanaActual = semanaIndex;
@@ -603,7 +604,7 @@ function inicializarAutomatizacion() {
   const minutos = hoy.getMinutes();
 
   // Verificar si es lunes y si la hora de asignación ya pasó al cargar la página
-  if (dia === 5 && (hora > HORA_ASIGNACION || (hora === HORA_ASIGNACION && minutos >= MINUTO_ASIGNACION))) {
+  if (dia === 1 && (hora > HORA_ASIGNACION || (hora === HORA_ASIGNACION && minutos >= MINUTO_ASIGNACION))) {
     const semanaIndex = obtenerSemanaActual();
     if (!asignacionesManual.hasOwnProperty(semanaIndex)) {
       semanaActual = semanaIndex;
@@ -1495,11 +1496,26 @@ function customConfirm(message, title = "Confirmación") {
   });
 }
 
-
-
 document.querySelectorAll('.view-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelector('.active').classList.remove('active', 'fade');
     document.querySelector(`#${btn.dataset.target}`).classList.add('active', 'fade');
   });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("main-content");
+  const menuToggleBtns = document.querySelectorAll("#menu-toggle");
+
+  menuToggleBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      mainContent.classList.toggle("shift");
+    });
+  });
+
+  // Inicializar iconos Lucide (asegurar que siempre se rendericen bien)
+  lucide.createIcons();
 });
