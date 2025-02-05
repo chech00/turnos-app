@@ -1,5 +1,8 @@
+const auth = window.auth;
+const db = window.db;
+
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("📂 documentos.js cargado con Cloudinary");
+    console.log("📂 documentos.js cargado con Supabase");
 
     const sidebar = document.getElementById("sidebar");
     const mainContent = document.getElementById("main-content");
@@ -27,38 +30,16 @@ document.addEventListener("DOMContentLoaded", function () {
     lucide.createIcons();
 
     // =============================
-    //  Inicializar Firebase (Asegurar que existe antes de usarlo)
+    //  Configuración de Supabase
     // =============================
-    const firebaseConfig = {
-        apiKey: "AIzaSyB3shQDdWq--FxY7Q6-of9xkEXg5XWjJWM",
-  authDomain: "asignacionturnos-cc578.firebaseapp.com",
-  projectId: "asignacionturnos-cc578",
-  storageBucket: "asignacionturnos-cc578.firebasestorage.app",
-  messagingSenderId: "267782898691",
-  appId: "1:267782898691:web:751f881080a7debd67fa36"
-    };
-
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    } else {
-        firebase.app();
-    }
-
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // =============================
-    //  Configuración de Cloudinary
-    // =============================
-    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dqaszkagj/upload"; 
-    const UPLOAD_PRESET = "documentos_noc"; // 
+    const API_BASE_URL = "http://localhost:3000"; // Reemplaza con la URL de tu backend en producción
 
     // ------------------------------
     // Autenticación de usuario y validación de rol
     // ------------------------------
     let currentUserRole = "";
 
-    auth.onAuthStateChanged(async (user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
         if (!user) {
             console.log("❌ No hay usuario autenticado. Redirigiendo...");
             window.location.href = "login.html";
@@ -68,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             console.log("✅ Usuario autenticado:", user.email);
 
-            const userDoc = await db.collection("userRoles").doc(user.uid).get();
+            const userDoc = await firebase.firestore().collection("userRoles").doc(user.uid).get();
             if (userDoc.exists) {
                 currentUserRole = userDoc.data().rol;
                 console.log("🔹 Rol del usuario en Firestore:", currentUserRole);
@@ -125,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ------------------------------
-    // Subir archivo a Cloudinary (Solo Admin)
+    // Subir archivo a Supabase Storage
     // ------------------------------
     async function subirArchivo() {
         console.log("✅ Click en upload-btn detectado.");
@@ -151,10 +132,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const file = fileInput.files[0];
-
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("upload_preset", UPLOAD_PRESET);
 
         try {
             Swal.fire({
@@ -166,20 +145,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
 
-            const response = await fetch(CLOUDINARY_URL, {
+            const response = await fetch(`${API_BASE_URL}/upload`, {
                 method: "POST",
                 body: formData,
             });
 
-            if (!response.ok) {
-                throw new Error(`Error en Cloudinary: ${response.statusText}`);
-            }
-
             const data = await response.json();
 
-            let documentos = JSON.parse(localStorage.getItem("documentosNoc")) || [];
-            documentos.push({ fileName: file.name, url: data.secure_url, type: file.type });
-            localStorage.setItem("documentosNoc", JSON.stringify(documentos));
+            if (!data.success) throw new Error(data.error || "Error desconocido");
 
             Swal.fire({
                 icon: "success",
@@ -195,49 +168,105 @@ document.addEventListener("DOMContentLoaded", function () {
             Swal.fire({
                 icon: "error",
                 title: "Error",
-                text: "❌ Hubo un problema al subir el archivo. Revisa la consola.",
+                text: "❌ Hubo un problema al subir el archivo.",
                 confirmButtonColor: "#e74c3c"
             });
         }
     }
 
     // ------------------------------
-    // Cargar Documentos
+    // Cargar Documentos desde Supabase
     // ------------------------------
-    function loadFiles() {
+    async function loadFiles() {
         const filesListDiv = document.getElementById("files-list");
         filesListDiv.innerHTML = "<p>🔄 Cargando archivos...</p>";
-        let documentos = JSON.parse(localStorage.getItem("documentosNoc")) || [];
 
-        filesListDiv.innerHTML = "";
-        documentos.forEach((doc, index) => {
-            const fileItem = document.createElement("li");
-            fileItem.classList.add("file-item");
-            fileItem.innerHTML = `
-                <span><strong>${doc.fileName}</strong> (${doc.type})</span>
-                <a href="${doc.url}" target="_blank">🔗 Ver/Descargar</a>
-                ${currentUserRole === "admin" ? `<button class="delete-btn" onclick="deleteFile(${index})">❌ Eliminar</button>` : ""}
+        try {
+            const response = await fetch(`${API_BASE_URL}/files`);
+            const files = await response.json();
+
+            filesListDiv.innerHTML = "";
+            files.forEach((file) => {
+                const fileItem = document.createElement("li");
+                fileItem.classList.add("file-item");
+                fileItem.innerHTML = `
+                <span><strong>${file.name}</strong></span>
+                <div class="file-buttons">
+                    <button class="view-btn" onclick="previewFile('${file.url}')">👁️ Ver</button>
+                    <a href="${file.url}" download="${file.name}" class="download-btn">📥 Descargar</a>
+                    ${currentUserRole === "admin" ? `<button class="delete-btn" onclick="deleteFile('${file.name}')">❌ Eliminar</button>` : ""}
+                </div>
             `;
-
-            filesListDiv.appendChild(fileItem);
-        });
+        
+                filesListDiv.appendChild(fileItem);
+            });
+        } catch (error) {
+            console.error("❌ Error al cargar archivos:", error);
+            filesListDiv.innerHTML = "<p>⚠️ Error al cargar los archivos.</p>";
+        }
     }
 
     // ------------------------------
-    // Eliminar Documento (Solo Admin)
+    // Eliminar Documento desde Supabase
     // ------------------------------
-    window.deleteFile = function(index) {
+    window.deleteFile = async function (fileName) {
         if (currentUserRole !== "admin") {
             Swal.fire({ icon: "error", title: "Acceso Denegado", text: "❌ No puedes eliminar archivos.", confirmButtonColor: "#e74c3c" });
             return;
         }
 
-        let documentos = JSON.parse(localStorage.getItem("documentosNoc")) || [];
-        documentos.splice(index, 1);
-        localStorage.setItem("documentosNoc", JSON.stringify(documentos));
-        Swal.fire({ icon: "success", title: "Archivo Eliminado", text: "✅ Archivo eliminado correctamente.", confirmButtonColor: "#2ecc71" });
-        loadFiles();
+        try {
+            const response = await fetch(`${API_BASE_URL}/delete/${fileName}`, {
+                method: "DELETE",
+            });
+
+            const data = await response.json();
+            if (!data.success) throw new Error(data.error || "Error desconocido");
+
+            Swal.fire({
+                icon: "success",
+                title: "Archivo Eliminado",
+                text: "✅ Archivo eliminado correctamente.",
+                confirmButtonColor: "#2ecc71"
+            });
+
+            loadFiles();
+        } catch (error) {
+            console.error("❌ Error al eliminar archivo:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "❌ No se pudo eliminar el archivo.",
+                confirmButtonColor: "#e74c3c"
+            });
+        }
     };
 
     loadFiles();
 });
+
+function previewFile(fileUrl) {
+    const previewContainer = document.getElementById("preview-container");
+
+    // Determinar si es una imagen, PDF o archivo no compatible
+    if (fileUrl.endsWith(".png") || fileUrl.endsWith(".jpg") || fileUrl.endsWith(".jpeg") || fileUrl.endsWith(".gif")) {
+        previewContainer.innerHTML = `<img src="${fileUrl}" alt="Vista previa" class="preview-image">`;
+    } else if (fileUrl.endsWith(".pdf")) {
+        previewContainer.innerHTML = `<iframe src="${fileUrl}" class="preview-pdf"></iframe>`;
+    } else {
+        previewContainer.innerHTML = `<p>⚠️ No se puede previsualizar este tipo de archivo. Descárgalo para verlo.</p>`;
+    }
+}
+
+window.previewFile = function(fileUrl) {
+    const previewContainer = document.getElementById("preview-container");
+
+    // Determinar si es una imagen, PDF o archivo no compatible
+    if (fileUrl.endsWith(".png") || fileUrl.endsWith(".jpg") || fileUrl.endsWith(".jpeg") || fileUrl.endsWith(".gif")) {
+        previewContainer.innerHTML = `<img src="${fileUrl}" alt="Vista previa" class="preview-image">`;
+    } else if (fileUrl.endsWith(".pdf")) {
+        previewContainer.innerHTML = `<iframe src="${fileUrl}" class="preview-pdf"></iframe>`;
+    } else {
+        previewContainer.innerHTML = `<p>⚠️ No se puede previsualizar este tipo de archivo. Descárgalo para verlo.</p>`;
+    }
+};

@@ -1,23 +1,7 @@
-// ----------------------
-// 1) CONFIGURACIÓN FIREBASE
-// ----------------------
-const firebaseConfig = {
-  apiKey: "AIzaSyB3shQDdWq--FxY7Q6-of9xkEXg5XWjJWM",
-  authDomain: "asignacionturnos-cc578.firebaseapp.com",
-  projectId: "asignacionturnos-cc578",
-  storageBucket: "asignacionturnos-cc578.firebasestorage.app",
-  messagingSenderId: "267782898691",
-  appId: "1:267782898691:web:751f881080a7debd67fa36"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
 
 
-const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
-const secondaryAuth = secondaryApp.auth();
-
+const auth = window.auth;
+const db = window.db;
 
 // ----------------------
 // 2) VARIABLES GLOBALES
@@ -211,9 +195,9 @@ function generarCalendario(mes, año) {
 function asignarTurnos() {
   const filas = document.querySelectorAll("#calendar tbody tr");
   if (semanaActual >= filas.length) {
-    showCustomAlert("No hay más semanas disponibles en este mes.");
-    return;
+    return; // Eliminada la alerta
   }
+
 
   // Limpiar semana previa
   filas.forEach((fila, index) => {
@@ -381,7 +365,7 @@ function sendTelegramNotification(employeeName, message) {
       return;
   }
 
-  fetch("https://turnos-app-8viu.onrender.com/send-message", {
+  fetch("http://localhost:3000/send-message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chatId, message })
@@ -401,7 +385,7 @@ function sendTelegramNotificationConChatId(chatId, message) {
     return;
   }
 
-  fetch("https://turnos-app-8viu.onrender.com/send-message", {
+  fetch("http://localhost:3000/send-message", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ chatId, message })

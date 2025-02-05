@@ -12,10 +12,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-
-  <script>
-    // Ejemplo de configuración (reemplaza con la tuya)
-  </script>
 </head>
 <body>
   <!-- Sidebar -->
@@ -42,25 +38,40 @@
         <i data-lucide="panel-left"></i>
       </button>
       <h1>Documentos Noc</h1>
-      
+
     </header>
 
     <main>
-      <!-- Sección de subida de archivos (visible solo para admin) -->
-      <section id="upload-section" style="display: none;">
-        <h2>Subir Nuevo Archivo</h2>
-        <div id="upload-area" style="border: 2px dashed #3498db; padding: 20px; cursor: pointer;">
-            <p>Haz clic aquí para seleccionar un archivo</p>
+      <div class="documentos-container">
+        
+        <!-- Columna Izquierda: Subir Archivos + Archivos Disponibles -->
+        <div class="left-column">
+          <section id="upload-section" style="display: none;">
+            <h2>Subir Nuevo Archivo</h2>
+            <input type="text" id="file-name" placeholder="Nombre del archivo">
+            <input type="text" id="file-description" placeholder="Descripción del archivo">
+            <div id="upload-area">
+              <p>Haz clic aquí para seleccionar un archivo</p>
+            </div>
+            <input type="file" id="file-input" accept="image/*, video/*, audio/*, application/pdf" style="display: none;">
+            <button id="upload-btn">Subir Archivo</button>
+          </section>
+
+          <!-- Sección de Archivos Disponibles -->
+          <section id="files-section">
+            <h2>Archivos Disponibles</h2>
+            <ul id="files-list"></ul>
+          </section>
         </div>
-        <input type="file" id="file-input" accept="*/*" style="display: none;">
-        <button id="upload-btn">Subir Archivo</button>
-    </section>
-      
-      <!-- Sección de archivos -->
-      <section id="files-section">
-        <h2>Archivos Disponibles</h2>
-        <ul id="files-list"></ul>
-      </section>
+
+        <!-- Columna Derecha: Previsualización -->
+        <section id="preview-section">
+    <h2>Previsualización</h2>
+    <div id="preview-container" class="preview-container">
+        <p>Selecciona un archivo para previsualizar</p>
+    </div>
+</section>
+      </div>
     </main>
 
     <footer class="footer">
@@ -68,10 +79,10 @@
     </footer>
   </div>
 
-  <!-- Archivo JavaScript para la funcionalidad de Documentos Noc y el sidebar -->
-  <script src="./js/documentos.js"></script>
+  <script type="module" src="./js/firebase.js"></script>
+  <script type="module" src="./js/documentos.js"></script>
   <script>
-    // Inicializar iconos de Lucide
+    
     lucide.createIcons();
   </script>
 </body>

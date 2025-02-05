@@ -1,18 +1,7 @@
 "use strict";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyB3shQDdWq--FxY7Q6-of9xkEXg5XWjJWM",
-  authDomain: "asignacionturnos-cc578.firebaseapp.com",
-  projectId: "asignacionturnos-cc578",
-  storageBucket: "asignacionturnos-cc578.firebasestorage.app",
-  messagingSenderId: "267782898691",
-  appId: "1:267782898691:web:751f881080a7debd67fa36"
-};
-
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth = window.auth;
+const db = window.db;
 
 // Manejo del inicio de sesión
 document.getElementById("login-form").addEventListener("submit", async (event) => {

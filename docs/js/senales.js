@@ -1,21 +1,6 @@
-// ========================================
-//  Configuración de Firebase (versión 8.x)
-// ========================================
-const firebaseConfig = {
-  apiKey: "AIzaSyB3shQDdWq--FxY7Q6-of9xkEXg5XWjJWM",
-  authDomain: "asignacionturnos-cc578.firebaseapp.com",
-  projectId: "asignacionturnos-cc578",
-  storageBucket: "asignacionturnos-cc578.firebasestorage.app",
-  messagingSenderId: "267782898691",
-  appId: "1:267782898691:web:751f881080a7debd67fa36"
-};
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
-const auth = firebase.auth();
-
+const auth = window.auth;
+const db = window.db;
 // ========================================
 //     Variable global para el rol
 // ========================================
@@ -222,6 +207,7 @@ function eliminarNodo(nodoId) {
 //                 PONs
 // ========================================
 function crearPON(nodoId) {
+  console.log("✅ crearPON ejecutado correctamente");
   if (!usuarioEsAdmin) {
     alert("No tienes permiso para crear PONs.");
     return;
@@ -254,6 +240,7 @@ function crearPON(nodoId) {
         });
     });
 }
+window.crearPON = crearPON;
 
 function cargarPONs(nodoId) {
   const ponList = document.getElementById("pon-list");
@@ -367,6 +354,7 @@ function mostrarVistaPON(nodoId, ponId, ponName) {
 }
 
 function crearCaja(nodoId, ponId) {
+  console.log("✅ crearCaja ejecutado correctamente");
   if (!usuarioEsAdmin) {
     alert("No tienes permiso para crear Cajas.");
     return;
@@ -402,6 +390,7 @@ function crearCaja(nodoId, ponId) {
         });
     });
 }
+window.crearCaja = crearCaja;
 
 function cargarCajas(nodoId, ponId) {
   const cajaList = document.getElementById("caja-list");
@@ -566,6 +555,7 @@ function crearFilamento(nodoId, ponId, cajaId) {
         });
     });
 }
+window.crearFilamento = crearFilamento;
 
 function cargarFilamentos(nodoId, ponId, cajaId) {
   const filamentoList = document.getElementById("filamento-list");

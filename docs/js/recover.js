@@ -1,18 +1,7 @@
 "use strict";
 
-// Configuración de Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyB3shQDdWq--FxY7Q6-of9xkEXg5XWjJWM",
-  authDomain: "asignacionturnos-cc578.firebaseapp.com",
-  projectId: "asignacionturnos-cc578",
-  storageBucket: "asignacionturnos-cc578.firebasestorage.app",
-  messagingSenderId: "267782898691",
-  appId: "1:267782898691:web:751f881080a7debd67fa36"
-};
-
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+const auth = window.auth;
+const db = window.db;
 
 // Elementos del DOM
 const emailInput = document.getElementById("recover-email");
