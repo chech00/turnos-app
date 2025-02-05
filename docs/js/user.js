@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     configurarSidebar();
     verificarRolUsuario();
   });
-  
+
   let esAdmin = false; 
   
   function verificarRolUsuario() {
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
           esAdmin = false;
           ocultarBotonesEdicion();
         }
-  
         mostrarBienvenida(user);
         cargarNodos();
       } catch (error) {

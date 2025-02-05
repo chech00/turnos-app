@@ -365,7 +365,7 @@ function sendTelegramNotification(employeeName, message) {
       return;
   }
 
-  fetch("http://localhost:3000/send-message", {
+  fetch("https://turnos-app-8viu.onrender.com/send-message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chatId, message })
@@ -385,7 +385,7 @@ function sendTelegramNotificationConChatId(chatId, message) {
     return;
   }
 
-  fetch("http://localhost:3000/send-message", {
+  fetch("https://turnos-app-8viu.onrender.com/send-message", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ chatId, message })

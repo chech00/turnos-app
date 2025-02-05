@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // =============================
     //  Configuración de Supabase
     // =============================
-    const API_BASE_URL = "http://localhost:3000"; // Reemplaza con la URL de tu backend en producción
+    const API_BASE_URL = "https://turnos-app-8viu.onrender.com"; // Reemplaza con la URL de tu backend en producción
 
     // ------------------------------
     // Autenticación de usuario y validación de rol

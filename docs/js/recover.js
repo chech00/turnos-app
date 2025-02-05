@@ -16,7 +16,6 @@ emailInput.addEventListener("input", () => {
     ? "#4caf50"   // Verde para correo válido
     : "#ff5252";  // Rojo para correo inválido
 });
-
 // Manejo del envío del formulario
 document.getElementById("recover-form").addEventListener("submit", async (event) => {
   event.preventDefault();

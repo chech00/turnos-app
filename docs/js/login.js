@@ -79,7 +79,6 @@ togglePasswordIcon.addEventListener("click", () => {
     togglePasswordIcon.style.color = "#ccc";
   }
 });
-
 // ---------------------------
 // Validaciones en tiempo real
 // ---------------------------

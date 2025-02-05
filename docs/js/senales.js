@@ -16,7 +16,6 @@ function verificarRolUsuario() {
       window.location.href = "login.html";
       return;
     }
-
     // Lee el rol desde la colección userRoles (o la tuya)
     db.collection("userRoles")
       .doc(user.uid)
