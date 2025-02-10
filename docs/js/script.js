@@ -559,8 +559,8 @@ function resaltarSemanaActual() {
 // ----------------------
 
 // HORA CONFIGURABLE
-const HORA_ASIGNACION = 9; // Cambia esto a la hora deseada (Formato 24h)
-const MINUTO_ASIGNACION = 00; // Cambia esto a los minutos deseados
+const HORA_ASIGNACION = 10; // Cambia esto a la hora deseada (Formato 24h)
+const MINUTO_ASIGNACION = 40; // Cambia esto a los minutos deseados
 
 function asignacionAutomaticaTurnos() {
   const hoy = new Date();
