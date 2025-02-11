@@ -1,5 +1,4 @@
 
-
 const auth = window.auth;
 const db = window.db;
 
@@ -560,7 +559,8 @@ function resaltarSemanaActual() {
 // 11) AUTOMATIZACIÓN
 // ----------------------
 // HORA CONFIGURABLE
-const HORA_ASIGNACION = 8; // Cambia esto a la hora deseada (Formato 24h)
+
+const HORA_ASIGNACION = 9; // Cambia esto a la hora deseada (Formato 24h)
 const MINUTO_ASIGNACION = 0; // Cambia esto a los minutos deseados
 
 function asignacionAutomaticaTurnos() {
