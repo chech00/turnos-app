@@ -329,6 +329,8 @@ function cargarAsignacionesGuardadas(mes, año) {
 // 7) NOTIFICACIONES TELEGRAM
 // ----------------------
 function sendEmailNotification(turnosSemana) {
+  console.log("🚀 Enviando notificaciones de Telegram para la asignación automática...");
+  console.log("📊 Datos de turnos:", turnosSemana);
   cargarContactosDesdeFirestore()
     .then((contactos) => {
       additionalTelegram = contactos;
@@ -557,10 +559,9 @@ function resaltarSemanaActual() {
 // ----------------------
 // 11) AUTOMATIZACIÓN
 // ----------------------
-
 // HORA CONFIGURABLE
-const HORA_ASIGNACION = 12; // Cambia esto a la hora deseada (Formato 24h)
-const MINUTO_ASIGNACION = 8; // Cambia esto a los minutos deseados
+const HORA_ASIGNACION = 8; // Cambia esto a la hora deseada (Formato 24h)
+const MINUTO_ASIGNACION = 0; // Cambia esto a los minutos deseados
 
 function asignacionAutomaticaTurnos() {
   const hoy = new Date();

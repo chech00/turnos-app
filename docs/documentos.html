@@ -3,11 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documentos Noc</title>
+  <title>Documentos NOC - Rediseño Profesional</title>
+  
+  <!-- Fuentes -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Estilos -->
   <link rel="stylesheet" href="./css/user.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="./css/documentos.css">
+  
+  <!-- Librerías -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -20,12 +29,13 @@
       <img src="https://i.ibb.co/HqrX2cr/LOGO-COLOR-2-SLOGAN-768x185.png" alt="Logo de la Empresa" class="logo-sidebar">
     </div>
     <nav class="sidebar-menu">
-        <ul>
-          <li><a href="index.html" id="menu-turnos"><i data-lucide="calendar"></i> Turnos</a></li>
-          <li><a href="senales.html" id="menu-fibra"><i data-lucide="waypoints"></i> Señal de Fibra</a></li>
-          <li><a href="documentos.html" id="menu-doc"><i data-lucide="dock"></i> Documentos Noc</a></li>
-        </ul>
-      </nav>
+      <ul>
+        <li><a href="index.html" id="menu-turnos"><i data-lucide="calendar"></i> Turnos</a></li>
+        <li><a href="senales.html" id="menu-fibra"><i data-lucide="waypoints"></i> Señal de Fibra</a></li>
+        <li><a href="documentos.html" id="menu-doc"><i data-lucide="dock"></i> Documentos Noc</a></li>
+        <li><a href="noc.html" id="calendar-check" class="active"><i data-lucide="calendar-check"></i> Turnos Noc</a></li>
+      </ul>
+    </nav>
     <button id="logout-btn" class="primary-btn logout-btn">
       <i data-lucide="log-out"></i> Cerrar sesión
     </button>
@@ -37,40 +47,67 @@
       <button id="menu-toggle" class="menu-btn">
         <i data-lucide="panel-left"></i>
       </button>
-      <h1>Documentos Noc</h1>
-
+      <h1>Documentos NOC</h1>
     </header>
 
     <main>
-      <div class="documentos-container">
-        
-        <!-- Columna Izquierda: Subir Archivos + Archivos Disponibles -->
-        <div class="left-column">
-          <section id="upload-section" style="display: none;">
-            <h2>Subir Nuevo Archivo</h2>
-            <input type="text" id="file-name" placeholder="Nombre del archivo">
-            <input type="text" id="file-description" placeholder="Descripción del archivo">
-            <div id="upload-area">
-              <p>Haz clic aquí para seleccionar un archivo</p>
+      <!-- Se agrega la clase "hidden" para ocultar el contenido hasta configurar la vista -->
+      <div class="documentos-container hidden">
+        <!-- Sidebar de Subida (solo visible para admin) -->
+        <aside id="upload-section" class="upload-sidebar">
+          <div class="card upload-card">
+            <div class="card-header">
+              <i data-lucide="cloud-upload" class="header-icon"></i>
+              <h2>Nuevo Documento</h2>
             </div>
-            <input type="file" id="file-input" accept="image/*, video/*, audio/*, application/pdf" style="display: none;">
-            <button id="upload-btn">Subir Archivo</button>
-          </section>
+            <div class="upload-flow">
+              <div class="form-group">
+                <label for="file-name">Nombre del documento</label>
+                <input type="text" id="file-name" placeholder="Ej: Manual NOC 2024">
+              </div>
+              <div class="form-group">
+                <label for="file-description">Descripción</label>
+                <textarea id="file-description" rows="2" placeholder="Agrega una descripción..."></textarea>
+              </div>
+              <!-- Zona de Drop, con el id "upload-dropzone" -->
+              <div class="file-dropzone" id="upload-dropzone">
+                <div class="dropzone-content">
+                  <i data-lucide="folder-plus" class="dropzone-icon"></i>
+                  <div class="dropzone-text">
+                    <p class="drag-text">Arrastra tu archivo aquí</p>
+                    <p class="or-text">o</p>
+                    <p class="browse-text">Busca en tu dispositivo</p>
+                  </div>
+                </div>
+              </div>
+              <input type="file" id="file-input" hidden>
+              <button id="upload-btn" class="primary-btn full-width">
+                <i data-lucide="upload" class="btn-icon"></i>
+                Subir Documento
+              </button>
+            </div>
+          </div>
+        </aside>
 
-          <!-- Sección de Archivos Disponibles -->
-          <section id="files-section">
-            <h2>Archivos Disponibles</h2>
-            <ul id="files-list"></ul>
-          </section>
-        </div>
+        <!-- Sección Principal de Archivos -->
+        <section class="files-main">
+          <div class="files-header">
+            <div class="header-title">
+              <i data-lucide="archive" class="header-icon"></i>
+              <h2>Documentos del NOC</h2>
+            </div>
+            <div class="search-box">
+              <i data-lucide="search"></i>
+              <input type="text" placeholder="Buscar documentos...">
+            </div>
+          </div>
 
-        <!-- Columna Derecha: Previsualización -->
-        <section id="preview-section">
-    <h2>Previsualización</h2>
-    <div id="preview-container" class="preview-container">
-        <p>Selecciona un archivo para previsualizar</p>
-    </div>
-</section>
+          <div class="files-grid-container">
+            <div id="files-grid" class="files-grid">
+              <!-- Las tarjetas se generarán aquí dinámicamente -->
+            </div>
+          </div>
+        </section>
       </div>
     </main>
 
@@ -79,10 +116,20 @@
     </footer>
   </div>
 
+  <!-- Modal para vista previa -->
+  <div class="modal" id="preview-modal">
+    <div class="modal-content" id="modal-preview-content">
+      <span class="close-button" id="modal-close">&times;</span>
+      <!-- El contenido del modal se cargará dinámicamente -->
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script type="module" src="./js/firebase.js"></script>
   <script type="module" src="./js/documentos.js"></script>
+  
+  <!-- Inicialización de íconos -->
   <script>
-
     lucide.createIcons();
   </script>
 </body>

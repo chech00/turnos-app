@@ -1,272 +1,264 @@
+// documentos_espectacular.js
+
 const auth = window.auth;
 const db = window.db;
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("📂 documentos.js cargado con Supabase");
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("documentos_espectacular.js cargado.");
 
-    const sidebar = document.getElementById("sidebar");
-    const mainContent = document.getElementById("main-content");
-    const menuToggleBtns = document.querySelectorAll("#menu-toggle");
-    const logoutBtn = document.getElementById("logout-btn");
+  // --- Funcionalidad del Sidebar ---
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("main-content");
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    sidebar.classList.toggle("active");
+    mainContent.classList.toggle("shift");
+  });
 
-    menuToggleBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            sidebar.classList.toggle("active");
-            mainContent.classList.toggle("shift");
-        });
+  // Cerrar sesión
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    firebase.auth().signOut().then(() => {
+      window.location.href = "login.html";
+    }).catch(error => {
+      console.error("Error al cerrar sesión:", error);
     });
+  });
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-            firebase.auth().signOut().then(() => {
-                console.log("✅ Sesión cerrada correctamente.");
-                window.location.href = "login.html";
-            }).catch((error) => {
-                console.error("❌ Error al cerrar sesión:", error);
-            });
-        });
+  lucide.createIcons();
+
+  // URL base de la API (ajusta según tu entorno)
+  const API_BASE_URL = "https://turnos-app-8viu.onrender.com";
+  let currentUserRole = "";
+
+  // Verificar autenticación y rol del usuario
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    try {
+      const userDoc = await firebase.firestore().collection("userRoles").doc(user.uid).get();
+      if (userDoc.exists) {
+        currentUserRole = userDoc.data().rol;
+      }
+      configureView();
+    } catch (error) {
+      console.error("Error al verificar el rol del usuario:", error);
+    }
+  });
+
+  // Configurar vista según el rol:
+  // - Si es "admin": se muestra el panel de subida y la grilla se organiza en dos columnas.
+  // - Si es "user": se oculta el panel de subida y la grilla se muestra a lo ancho (una sola columna).
+  function configureView() {
+    const uploadSection = document.getElementById("upload-section");
+    const container = document.querySelector(".documentos-container");
+    if (currentUserRole === "admin") {
+      uploadSection.style.display = "block";
+      container.style.gridTemplateColumns = "320px 1fr";
+    } else {
+      uploadSection.style.display = "none";
+      container.style.gridTemplateColumns = "1fr";
+    }
+    // Remover la clase que oculta el contenedor una vez configurada la vista
+    container.classList.remove("hidden");
+    loadFiles();
+  }
+
+  // --- Eventos para la subida de archivos ---
+  const uploadDropzone = document.getElementById("upload-dropzone");
+  const fileInput = document.getElementById("file-input");
+  const uploadBtn = document.getElementById("upload-btn");
+
+  uploadDropzone.addEventListener("click", () => {
+    fileInput.click();
+  });
+
+  uploadBtn.addEventListener("click", uploadFile);
+
+  async function uploadFile() {
+    if (currentUserRole !== "admin") {
+      Swal.fire({
+        icon: "error",
+        title: "Acceso Denegado",
+        text: "No tienes permisos para subir archivos.",
+        confirmButtonColor: "#e74c3c"
+      });
+      return;
     }
 
-    lucide.createIcons();
+    if (!fileInput.files.length) {
+      Swal.fire({
+        icon: "warning",
+        title: "Selecciona un Archivo",
+        text: "Por favor, selecciona un archivo.",
+        confirmButtonColor: "#f39c12"
+      });
+      return;
+    }
 
-    // =============================
-    //  Configuración de Supabase
-    // =============================
-    const API_BASE_URL = "https://turnos-app-8viu.onrender.com"; // Reemplaza con la URL de tu backend en producción
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
 
-    // ------------------------------
-    // Autenticación de usuario y validación de rol
-    // ------------------------------
-    let currentUserRole = "";
+    try {
+      Swal.fire({
+        title: "Subiendo Archivo...",
+        text: "Por favor espera...",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+      const response = await fetch(`${API_BASE_URL}/upload`, {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Error al subir archivo.");
+      Swal.fire({
+        icon: "success",
+        title: "Archivo Subido",
+        text: "El archivo se ha subido correctamente.",
+        confirmButtonColor: "#2ecc71"
+      });
+      fileInput.value = "";
+      loadFiles();
+    } catch (error) {
+      console.error("Error al subir archivo:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al subir el archivo.",
+        confirmButtonColor: "#e74c3c"
+      });
+    }
+  }
 
-    firebase.auth().onAuthStateChanged(async (user) => {
-        if (!user) {
-            console.log("❌ No hay usuario autenticado. Redirigiendo...");
-            window.location.href = "login.html";
-            return;
+  // --- Cargar y mostrar archivos ---
+  async function loadFiles() {
+    const filesGrid = document.getElementById("files-grid");
+    filesGrid.innerHTML = "<p>Cargando archivos...</p>";
+    try {
+      const response = await fetch(`${API_BASE_URL}/files`);
+      const files = await response.json();
+      filesGrid.innerHTML = "";
+      files.forEach(file => {
+        // Crear tarjeta para cada archivo
+        const fileCard = document.createElement("div");
+        fileCard.classList.add("file-card");
+
+        // Miniatura
+        const thumbnail = document.createElement("div");
+        thumbnail.classList.add("file-thumbnail");
+        if (/\.(png|jpg|jpeg|gif)$/i.test(file.url)) {
+          thumbnail.innerHTML = `<img src="${file.url}" alt="Vista previa">`;
+        } else if (/\.pdf$/i.test(file.url)) {
+          thumbnail.innerHTML = `<iframe src="${file.url}"></iframe>`;
+        } else {
+          thumbnail.innerHTML = `<i data-lucide="file"></i>`;
+          lucide.createIcons();
         }
 
-        try {
-            console.log("✅ Usuario autenticado:", user.email);
+        // Contenedor de detalles (nombre y acciones)
+        const details = document.createElement("div");
+        details.classList.add("file-details");
 
-            const userDoc = await firebase.firestore().collection("userRoles").doc(user.uid).get();
-            if (userDoc.exists) {
-                currentUserRole = userDoc.data().rol;
-                console.log("🔹 Rol del usuario en Firestore:", currentUserRole);
-            } else {
-                console.log("❌ No se encontró información del rol en Firestore.");
-                return;
-            }
+        const fileName = document.createElement("div");
+        fileName.classList.add("file-name");
+        fileName.textContent = file.name;
 
-            configurarVistaDocumentos();
-        } catch (error) {
-            console.error("❌ Error al verificar el rol del usuario:", error);
-        }
-    });
+        const actions = document.createElement("div");
+        actions.classList.add("file-actions");
 
-    // ------------------------------
-    // Configurar Vista de Documentos
-    // ------------------------------
-    function configurarVistaDocumentos() {
-        const uploadSection = document.getElementById("upload-section");
-        const uploadBtn = document.getElementById("upload-btn");
+        const viewBtn = document.createElement("button");
+        viewBtn.textContent = "Ver";
+        viewBtn.classList.add("view-btn");
+        viewBtn.addEventListener("click", () => previewFile(file.url));
+        actions.appendChild(viewBtn);
 
-        console.log("🔄 Configurando vista de documentos...");
-        console.log("🔹 Rol actual del usuario:", currentUserRole);
+        const downloadLink = document.createElement("a");
+        downloadLink.textContent = "Descargar";
+        downloadLink.href = file.url;
+        downloadLink.download = file.name;
+        downloadLink.classList.add("download-btn");
+        actions.appendChild(downloadLink);
 
         if (currentUserRole === "admin") {
-            console.log("✅ Mostrando opciones de administrador...");
-            uploadSection.style.display = "block";
-            if (uploadBtn) uploadBtn.style.display = "block";
-        } else {
-            console.log("🔒 Ocultando opciones de administración...");
-            uploadSection.style.display = "none";
-            if (uploadBtn) uploadBtn.style.display = "none";
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Eliminar";
+          deleteBtn.classList.add("delete-btn");
+          deleteBtn.addEventListener("click", () => deleteFile(file.name));
+          actions.appendChild(deleteBtn);
         }
 
-        loadFiles();
+        details.appendChild(fileName);
+        details.appendChild(actions);
+        fileCard.appendChild(thumbnail);
+        fileCard.appendChild(details);
+        filesGrid.appendChild(fileCard);
+      });
+    } catch (error) {
+      console.error("Error al cargar archivos:", error);
+      filesGrid.innerHTML = "<p>Error al cargar archivos.</p>";
     }
+  }
 
-    // ------------------------------
-    // Inicializar eventos de subida de archivos
-    // ------------------------------
-    const uploadArea = document.getElementById("upload-area");
-    const fileInput = document.getElementById("file-input");
-    const uploadBtn = document.getElementById("upload-btn");
+  // --- Eliminar archivo ---
+  window.deleteFile = async function(fileName) {
+    if (currentUserRole !== "admin") {
+      Swal.fire({
+        icon: "error",
+        title: "Acceso Denegado",
+        text: "No tienes permisos para eliminar archivos.",
+        confirmButtonColor: "#e74c3c"
+      });
+      return;
+    }
+    try {
+      const response = await fetch(`${API_BASE_URL}/delete/${fileName}`, {
+        method: "DELETE"
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Error al eliminar archivo.");
+      Swal.fire({
+        icon: "success",
+        title: "Archivo Eliminado",
+        text: "El archivo se ha eliminado correctamente.",
+        confirmButtonColor: "#2ecc71"
+      });
+      loadFiles();
+    } catch (error) {
+      console.error("Error al eliminar archivo:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo eliminar el archivo.",
+        confirmButtonColor: "#e74c3c"
+      });
+    }
+  };
 
-    if (uploadArea && fileInput && uploadBtn) {
-        uploadArea.addEventListener("click", () => {
-            console.log("✅ Click en upload-area detectado.");
-            fileInput.click();
-        });
-
-        uploadBtn.addEventListener("click", subirArchivo);
+  // --- Previsualizar archivo ---
+  window.previewFile = function(fileUrl) {
+    const modal = document.getElementById("preview-modal");
+    const modalContent = document.getElementById("modal-preview-content");
+    if (/\.(png|jpg|jpeg|gif)$/i.test(fileUrl)) {
+      modalContent.innerHTML = `<span id="modal-close">&times;</span><img src="${fileUrl}" alt="Vista previa">`;
+    } else if (/\.pdf$/i.test(fileUrl)) {
+      modalContent.innerHTML = `<span id="modal-close">&times;</span><iframe src="${fileUrl}"></iframe>`;
     } else {
-        console.error("❌ No se encontraron los elementos de subida.");
+      modalContent.innerHTML = `<span id="modal-close">&times;</span><p>No se puede previsualizar este archivo.</p>`;
     }
+    modal.style.display = "block";
+    // Reasignar el evento de cierre (ya que se rehace el contenido)
+    document.getElementById("modal-close").addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+  };
 
-    // ------------------------------
-    // Subir archivo a Supabase Storage
-    // ------------------------------
-    async function subirArchivo() {
-        console.log("✅ Click en upload-btn detectado.");
-
-        if (currentUserRole !== "admin") {
-            Swal.fire({
-                icon: "error",
-                title: "Acceso Denegado",
-                text: "❌ No tienes permisos para subir archivos.",
-                confirmButtonColor: "#e74c3c"
-            });
-            return;
-        }
-
-        if (fileInput.files.length === 0) {
-            Swal.fire({
-                icon: "warning",
-                title: "Selecciona un Archivo",
-                text: "❌ Por favor, selecciona un archivo antes de subirlo.",
-                confirmButtonColor: "#f39c12"
-            });
-            return;
-        }
-
-        const file = fileInput.files[0];
-        const formData = new FormData();
-        formData.append("file", file);
-
-        try {
-            Swal.fire({
-                title: "Subiendo Archivo...",
-                text: "Por favor espera mientras se sube el archivo.",
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            const response = await fetch(`${API_BASE_URL}/upload`, {
-                method: "POST",
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (!data.success) throw new Error(data.error || "Error desconocido");
-
-            Swal.fire({
-                icon: "success",
-                title: "Archivo Subido",
-                text: "✅ Tu archivo ha sido subido exitosamente.",
-                confirmButtonColor: "#2ecc71"
-            });
-
-            fileInput.value = "";
-            loadFiles();
-        } catch (error) {
-            console.error("❌ Error al subir archivo:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "❌ Hubo un problema al subir el archivo.",
-                confirmButtonColor: "#e74c3c"
-            });
-        }
+  // También se puede cerrar el modal haciendo clic fuera del contenido
+  window.addEventListener("click", (event) => {
+    const modal = document.getElementById("preview-modal");
+    if (event.target === modal) {
+      modal.style.display = "none";
     }
-
-    // ------------------------------
-    // Cargar Documentos desde Supabase
-    // ------------------------------
-    async function loadFiles() {
-        const filesListDiv = document.getElementById("files-list");
-        filesListDiv.innerHTML = "<p>🔄 Cargando archivos...</p>";
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/files`);
-            const files = await response.json();
-
-            filesListDiv.innerHTML = "";
-            files.forEach((file) => {
-                const fileItem = document.createElement("li");
-                fileItem.classList.add("file-item");
-                fileItem.innerHTML = `
-                <span><strong>${file.name}</strong></span>
-                <div class="file-buttons">
-                    <button class="view-btn" onclick="previewFile('${file.url}')">👁️ Ver</button>
-                    <a href="${file.url}" download="${file.name}" class="download-btn">📥 Descargar</a>
-                    ${currentUserRole === "admin" ? `<button class="delete-btn" onclick="deleteFile('${file.name}')">❌ Eliminar</button>` : ""}
-                </div>
-            `;
-        
-                filesListDiv.appendChild(fileItem);
-            });
-        } catch (error) {
-            console.error("❌ Error al cargar archivos:", error);
-            filesListDiv.innerHTML = "<p>⚠️ Error al cargar los archivos.</p>";
-        }
-    }
-
-    // ------------------------------
-    // Eliminar Documento desde Supabase
-    // ------------------------------
-    window.deleteFile = async function (fileName) {
-        if (currentUserRole !== "admin") {
-            Swal.fire({ icon: "error", title: "Acceso Denegado", text: "❌ No puedes eliminar archivos.", confirmButtonColor: "#e74c3c" });
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/delete/${fileName}`, {
-                method: "DELETE",
-            });
-
-            const data = await response.json();
-            if (!data.success) throw new Error(data.error || "Error desconocido");
-
-            Swal.fire({
-                icon: "success",
-                title: "Archivo Eliminado",
-                text: "✅ Archivo eliminado correctamente.",
-                confirmButtonColor: "#2ecc71"
-            });
-
-            loadFiles();
-        } catch (error) {
-            console.error("❌ Error al eliminar archivo:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "❌ No se pudo eliminar el archivo.",
-                confirmButtonColor: "#e74c3c"
-            });
-        }
-    };
-
-    loadFiles();
+  });
 });
-
-function previewFile(fileUrl) {
-    const previewContainer = document.getElementById("preview-container");
-
-    // Determinar si es una imagen, PDF o archivo no compatible
-    if (fileUrl.endsWith(".png") || fileUrl.endsWith(".jpg") || fileUrl.endsWith(".jpeg") || fileUrl.endsWith(".gif")) {
-        previewContainer.innerHTML = `<img src="${fileUrl}" alt="Vista previa" class="preview-image">`;
-    } else if (fileUrl.endsWith(".pdf")) {
-        previewContainer.innerHTML = `<iframe src="${fileUrl}" class="preview-pdf"></iframe>`;
-    } else {
-        previewContainer.innerHTML = `<p>⚠️ No se puede previsualizar este tipo de archivo. Descárgalo para verlo.</p>`;
-    }
-}
-
-window.previewFile = function(fileUrl) {
-    const previewContainer = document.getElementById("preview-container");
-
-    // Determinar si es una imagen, PDF o archivo no compatible
-    if (fileUrl.endsWith(".png") || fileUrl.endsWith(".jpg") || fileUrl.endsWith(".jpeg") || fileUrl.endsWith(".gif")) {
-        previewContainer.innerHTML = `<img src="${fileUrl}" alt="Vista previa" class="preview-image">`;
-    } else if (fileUrl.endsWith(".pdf")) {
-        previewContainer.innerHTML = `<iframe src="${fileUrl}" class="preview-pdf"></iframe>`;
-    } else {
-        previewContainer.innerHTML = `<p>⚠️ No se puede previsualizar este tipo de archivo. Descárgalo para verlo.</p>`;
-    }
-};

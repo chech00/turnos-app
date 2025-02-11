@@ -4,16 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Señales de Fibra</title>
-   <link rel="stylesheet" href="./css/senales.css" />
+
+    <!-- Tus archivos CSS -->
+    <link rel="stylesheet" href="./css/senales.css" />
     <link rel="stylesheet" href="./css/styles.css" />
 
-  
+    <!-- Librerías externas -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
 
   <body>
-   
+    <!-- SIDEBAR -->
     <div id="sidebar" class="sidebar">
       <div class="sidebar-header">
         <img
@@ -26,11 +28,11 @@
       <nav class="sidebar-menu">
         <ul>
           <li><a href="index.html" id="menu-turnos"><i data-lucide="calendar"></i> Turnos</a></li>
-          <li><a href="senales.html" id="menu-fibra"><i data-lucide="waypoints"></i> Señal de Fibra</a></li>
-          <li><a href="documentos.html" id="menu-doc"><i data-lucide="dock"></i> Documentos Noc</a></li>
+            <li><a href="senales.html" id="menu-fibra"><i data-lucide="waypoints"></i> Señal de Fibra</a></li>
+            <li><a href="documentos.html" id="menu-doc"><i data-lucide="dock"></i> Documentos Noc</a></li>
+            <li><a href="noc.html" id="calendar-check" class="active"><i data-lucide="calendar-check"></i> Turnos Noc</a></li>
         </ul>
       </nav>
-
       <button id="logout-btn" class="primary-btn logout-btn">
         <i data-lucide="log-out"></i> Cerrar sesión
       </button>
@@ -38,7 +40,6 @@
 
     
     <div id="main-content" class="main-content">
-      
       <header>
         <button id="menu-toggle" class="menu-btn">
           <i data-lucide="panel-left"></i>
@@ -46,29 +47,26 @@
         <h1>Red de Fibra Óptica</h1>
       </header>
 
-      
       <main>
         <section class="fiber-container">
-        
+          <!-- Aquí se inyecta la estructura de fibra vía JS -->
           <div id="fiber-structure" class="fiber-structure"></div>
         </section>
       </main>
 
-      
       <footer>
         <p>&copy; 2025 PatagoniaIP SpA - Todos los derechos reservados.</p>
       </footer>
     </div>
 
-    
+    <!-- Scripts de Firebase (App, Auth y Firestore) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script type="module"src="./js/firebase.js"></script>
     <script type="module"src="./js/senales.js"></script>
-
+    
     <script>
-      // Renderizar los íconos Lucide al cargar
       lucide.createIcons();
     </script>
   </body>

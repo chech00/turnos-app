@@ -1,0 +1,591 @@
+/* =============================
+   Variables de Colores (Root)
+============================= */
+:root {
+  --color-fondo-principal: #1b1f23;
+  --color-fondo-secundario: #23272e;
+  --color-texto-principal: #e3e6eb;
+  --color-texto-secundario: #a1a9b5;
+  --color-acento-primario: #7796cb;
+  --color-acento-secundario: #8fbcbb;
+  --color-detalle: #c3d0e8;
+  --color-error: #d77a7a;
+  --color-exito: #88c0a6;
+  --color-advertencia: #e8c27e;
+}
+
+/* =============================
+   Estilos Base
+============================= */
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--color-fondo-principal);
+  color: var(--color-texto-principal);
+}
+.container {
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* =============================
+   Sidebar y Encabezado
+============================= */
+header {
+  background: var(--color-fondo-secundario);
+  color: var(--color-texto-principal);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+/* Navegador del Mes */
+.month-navigator {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botón de menú (versión original) */
+.btn-icon {
+  background: #444;
+  border: none;
+  color: #fff;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.btn-icon:hover {
+  background: #666;
+}
+.text-xl {
+  font-size: 1.2rem;
+}
+
+/* =============================
+   Calendarios
+============================= */
+.calendar-container {
+  margin: 20px 0;
+  padding: 15px;
+  background: var(--color-fondo-secundario);
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+  overflow-x: auto;
+}
+.calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.calendar th,
+.calendar td {
+  border: 1px solid var(--color-detalle);
+  text-align: center;
+  height: 35px;
+  padding: 0;
+}
+.calendar th:first-child,
+.calendar td:first-child {
+  width: 180px;
+  white-space: nowrap;
+  text-align: left;
+  padding-left: 10px;
+}
+.calendar-day {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.calendar-day:hover {
+  transform: scale(1.05);
+}
+.calendar-day.selected {
+  background-color: rgba(0,128,255,0.2);
+}
+.domingo-libre {
+  background: #ffcccc !important;
+  color: #d9534f !important;
+}
+.dia-libre {
+  background: #a8d8ea !important;
+  color: #000 !important;
+}
+.nocturno {
+  background: #cccccc !important;
+  color: #333 !important;
+}
+.feriado {
+  background: #ccffcc !important;
+  color: #2e8b57 !important;
+  font-weight: bold;
+}
+
+/* =============================
+   Sección Turnos y Backup
+============================= */
+.turnos-backup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+.turnos-section,
+.backup-container {
+  flex: 1 1 300px;
+  box-sizing: border-box;
+  padding: 10px;
+  background: var(--color-fondo-secundario);
+  border: 1px solid var(--color-detalle);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 160px;
+}
+.turnos-section h2,
+.backup-container h2 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Contenedor y Botones de asignación de turno */
+.assignment-container {
+  width: 100%;
+  flex: 1;
+  border: 1px solid var(--color-detalle);
+  border-radius: 8px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.turnos-buttons {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 550px;
+  justify-items: center;
+}
+.btn-turno {
+  width: 60px;
+  height: 35px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: var(--color-texto-principal);
+}
+.btn-turno:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Backup: Botones y Dropdown */
+.backup-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.btn-guardar,
+.btn-cargar,
+.btn-horarios {
+  padding: 8px;
+  width: 120px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--color-acento-primario);
+  color: var(--color-texto-principal);
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-size: 0.9rem;
+}
+.btn-guardar:hover,
+.btn-cargar:hover,
+.btn-horarios:hover {
+  background: var(--color-acento-secundario);
+  transform: scale(1.03);
+}
+.dropdown-container {
+  width: 100%;
+  max-width: 250px;
+  margin: 10px auto;
+  padding: 5px;
+  background-color: var(--color-fondo-secundario);
+  border: 1px solid var(--color-detalle);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.select-meses {
+  width: 100%;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid var(--color-detalle);
+  font-size: 0.9rem;
+  background: var(--color-fondo-principal);
+  color: var(--color-texto-principal);
+}
+
+/* =============================
+   Empleados (Employees)
+============================= */
+.employees h2 {
+  font-size: 1.5rem;
+  color: var(--color-acento-primario);
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-left: 1rem;
+}
+.employees h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 70%;
+  width: 4px;
+  background: var(--color-acento-secundario);
+  border-radius: 4px;
+}
+.employee-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+.employee-card {
+  position: relative;
+  background: var(--color-fondo-secundario);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+.employee-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    var(--color-acento-primario),
+    transparent
+  );
+  opacity: 0.1;
+  transition: opacity 0.3s ease;
+}
+.employee-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
+.employee-card:hover::before {
+  opacity: 0.2;
+}
+.employee-card img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1.5rem;
+  display: block;
+  border: 3px solid var(--color-acento-primario);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+}
+.employee-card:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+.employee-card span {
+  display: block;
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-texto-principal);
+  font-size: 1.1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+.employee-card span::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: var(--color-acento-secundario);
+  border-radius: 2px;
+}
+.employee-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(143, 188, 187, 0.1) 0%,
+    rgba(119, 150, 203, 0.05) 100%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.employee-card:hover::after {
+  opacity: 1;
+}
+
+/* =============================
+   Modales
+============================= */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-content {
+  background-color: var(--color-fondo-secundario);
+  margin: 5% auto;
+  padding: 30px;
+  border: 1px solid var(--color-detalle);
+  width: 90%;
+  max-width: 1200px;
+  color: var(--color-texto-principal);
+  border-radius: 10px;
+  animation: slideIn 0.5s ease;
+}
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.close {
+  color: var(--color-texto-principal);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.close:hover {
+  color: var(--color-acento-secundario);
+}
+.modal-horarios {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  overflow: auto;
+}
+.modal-horarios-content {
+  background: var(--color-fondo-secundario);
+  margin: 5% auto;
+  padding: 30px;
+  border: 1px solid var(--color-detalle);
+  width: 90%;
+  max-width: 900px;
+  color: var(--color-texto-principal);
+  border-radius: 10px;
+  position: relative;
+}
+.close-horarios {
+  color: var(--color-texto-principal);
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.close-horarios:hover {
+  color: var(--color-error);
+}
+.tabla-horarios {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+  background: var(--color-fondo-secundario);
+  color: var(--color-texto-principal);
+}
+.tabla-horarios th {
+  background: var(--color-acento-primario);
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+  border: 1px solid var(--color-detalle);
+}
+.tabla-horarios td {
+  padding: 10px;
+  border: 1px solid var(--color-detalle);
+  background: #2f343b;
+  color: var(--color-texto-principal);
+}
+
+/* Fila de Bitácora */
+.bitacora-row {
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid var(--color-detalle) !important;
+  white-space: nowrap;
+}
+
+/* Ocultar elementos solo para admin */
+.admin-only {
+  display: none !important;
+}
+
+/* =============================
+   Responsividad
+============================= */
+@media (max-width: 768px) {
+  .calendar th,
+  .calendar td {
+    font-size: 12px;
+    padding: 10px;
+    height: 35px;
+  }
+  .btn-turno {
+    font-size: 12px;
+    width: 50px;
+    height: 35px;
+  }
+  .calendar-container {
+    height: auto;
+    max-height: 400px;
+  }
+  .turnos-backup {
+    flex-direction: column;
+    align-items: center;
+  }
+  .turnos-section,
+  .backup-container {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+/* =============================
+   Rediseño 3D/Moderno para Botones
+         (Estilo Neumórfico)
+============================= */
+
+/* Botones de Navegación (íconos) */
+.btn-icon {
+  background: linear-gradient(145deg, #3a3f47, #2e3239);
+  border: none;
+  color: var(--color-texto-principal);
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4),
+              -4px -4px 8px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-icon:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.4),
+              -6px -6px 12px rgba(255, 255, 255, 0.1);
+}
+.btn-icon:active {
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.4),
+              inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+}
+
+/* Botones de asignación de turno (.btn-turno) */
+/* Se respeta el background inline definido en el HTML */
+.btn-turno {
+  width: 60px;
+  height: 35px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-texto-principal);
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3),
+              -3px -3px 6px rgba(255, 255, 255, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-turno:hover {
+  transform: translateY(-3px);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3),
+              -4px -4px 8px rgba(255, 255, 255, 0.05);
+}
+.btn-turno:active {
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3),
+              inset -2px -2px 5px rgba(255, 255, 255, 0.05);
+}
+
+/* Botones de Backup y Horarios (.btn-guardar, .btn-cargar, .btn-horarios) */
+.btn-guardar,
+.btn-cargar,
+.btn-horarios {
+  padding: 10px 15px;
+  width: 140px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-texto-principal);
+  background: linear-gradient(145deg, var(--color-acento-primario), var(--color-acento-secundario));
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3),
+              -3px -3px 6px rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+}
+.btn-guardar:hover,
+.btn-cargar:hover,
+.btn-horarios:hover {
+  transform: translateY(-3px);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3),
+              -4px -4px 8px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, var(--color-acento-secundario), var(--color-acento-primario));
+}
+.btn-guardar:active,
+.btn-cargar:active,
+.btn-horarios:active {
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3),
+              inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+}
+
+
