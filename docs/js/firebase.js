@@ -17,7 +17,7 @@ const firebaseConfig = {
   const db = firebase.firestore();
   
   const secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
-  const secondaryAuth = secondaryApp.auth();
+  window.secondaryAuth = secondaryApp.auth();
 
   window.auth = auth;
   window.db = db;

@@ -2,6 +2,7 @@
 const auth = window.auth;
 const db = window.db;
 
+
 // ----------------------
 // 2) VARIABLES GLOBALES
 // ----------------------
@@ -1101,7 +1102,7 @@ if (saveEmpleadoBtn) {
         return;
       }
 
-      secondaryAuth.createUserWithEmailAndPassword(email, password)
+      window.secondaryAuth.createUserWithEmailAndPassword(email, password)
         .then(async (userCredential) => {
           const newUser = userCredential.user;
           await db.collection("userRoles").doc(newUser.uid).set({ 
