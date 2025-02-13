@@ -1265,6 +1265,14 @@ if (saveEmpleadoBtn) {
     });
   }
 
+  const editName = document.getElementById("edit-user-name");
+const editEmail = document.getElementById("edit-user-email");
+const editRole = document.getElementById("edit-user-role");
+if (!editName || !editEmail || !editRole) {
+  console.error("❌ ERROR: No se encontraron los elementos del formulario de edición.");
+  return;
+}
+
   // Editar usuario
   if (editUserBtn) {
     editUserBtn.addEventListener("click", async () => {
