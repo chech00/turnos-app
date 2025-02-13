@@ -91,7 +91,8 @@ function generarFeriados(year) {
 // ----------------------
 // 4) CALENDARIO
 // ----------------------
-function generarCalendario(mes, año) {
+window.generarCalendario = function (mes, año) {
+
   const calendarBody = document.querySelector("#calendar tbody");
   const calendarTitle = document.getElementById("calendar-title");
   const linearContainer = document.getElementById("linear-view");
@@ -1219,6 +1220,24 @@ if (saveEmpleadoBtn) {
       }
     });
   });
+  document.addEventListener("DOMContentLoaded", () => {
+    const lastPage = localStorage.getItem("lastPage");
+
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            db.collection("userRoles").doc(user.uid).get().then((doc) => {
+                if (doc.exists) {
+                    const role = doc.data().rol;
+                    
+                    if (role !== "admin" && window.location.pathname.includes("index.html")) {
+                        window.location.href = lastPage || "user.html";
+                    }
+                }
+            });
+        }
+    });
+});
+
   
   function resetFormUserManagement() {
     if (userEmailInput) userEmailInput.value = "";
@@ -1503,4 +1522,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Inicializar iconos Lucide (asegurar que siempre se rendericen bien)
   lucide.createIcons();
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const lastPage = localStorage.getItem("lastPage");
+
+  auth.onAuthStateChanged((user) => {
+      if (user) {
+          db.collection("userRoles").doc(user.uid).get().then((doc) => {
+              if (doc.exists) {
+                  const role = doc.data().rol;
+                  
+                  if (role !== "admin" && window.location.pathname.includes("index.html")) {
+                      window.location.href = lastPage || "user.html";
+                  }
+              }
+          });
+      }
+  });
 });

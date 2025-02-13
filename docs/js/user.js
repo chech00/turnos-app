@@ -11,39 +11,54 @@ document.addEventListener("DOMContentLoaded", function () {
   
   function verificarRolUsuario() {
     auth.onAuthStateChanged(async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-  
-      try {
-        const userDoc = await db.collection("userRoles").doc(user.uid).get();
-        if (!userDoc.exists) {
-          alert("No tienes un rol asignado. Contacta al administrador.");
-          auth.signOut();
-          window.location.href = "login.html";
-          return;
+        if (!user) {
+            window.location.href = "login.html"; // Si no hay usuario, manda a login
+            return;
         }
-  
-        const userData = userDoc.data();
-        const userRole = userData.rol;
-  
-        if (userRole === "admin") {
-          esAdmin = true;
-        } else {
-          esAdmin = false;
-          ocultarBotonesEdicion();
+
+        try {
+            const userDoc = await db.collection("userRoles").doc(user.uid).get();
+            if (!userDoc.exists) {
+                alert("No tienes un rol asignado. Contacta al administrador.");
+                auth.signOut();
+                window.location.href = "login.html";
+                return;
+            }
+
+            const userData = userDoc.data();
+            const userRole = userData.rol;
+
+            // Verificamos que si el usuario es normal, nunca lo mande a admin
+            if (userRole !== "admin" && window.location.pathname === "/index.html") {
+                window.location.href = "user.html";
+                return;
+            }
+
+            // Si es admin, que mantenga la navegación normal
+            if (userRole === "admin") {
+              esAdmin = true;
+              window.location.href = "index.html";
+            } else {
+              esAdmin = false;
+              ocultarBotonesEdicion();
+            
+              if (!window.location.pathname.includes("user.html")) {
+                window.location.href = "user.html"; // Redirige de inmediato a user.html si no está ahí
+              }
+            }
+            
+            mostrarBienvenida(user);
+            cargarNodos();
+            
+        } catch (error) {
+            console.error("Error en la verificación del usuario:", error.message);
+            alert("Hubo un problema con tu cuenta. Contacta al administrador.");
+            auth.signOut();
+            window.location.href = "login.html";
         }
-        mostrarBienvenida(user);
-        cargarNodos();
-      } catch (error) {
-        console.error("Error en la verificación del usuario:", error.message);
-        alert("Hubo un problema con tu cuenta. Contacta al administrador.");
-        auth.signOut();
-        window.location.href = "login.html";
-      }
     });
-  }
+}
+
   
   function ocultarBotonesEdicion() {
     const botonesCrear = document.querySelectorAll(".btn, .primary-btn");

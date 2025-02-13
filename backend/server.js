@@ -21,11 +21,7 @@ app.use(cors()); // Permitir peticiones desde el frontend
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-/**
- * Función para enviar un mensaje a Telegram.
- * Requiere que en el archivo .env estén definidos:
- *   BOT_TOKEN y TELEGRAM_CHAT_ID
- */
+
 async function enviarMensajeTelegram(mensaje) {
   const BOT_TOKEN = process.env.BOT_TOKEN;
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -172,6 +168,7 @@ app.get("/prueba-telegram", async (req, res) => {
       res.status(500).json({ error: "Error al enviar mensaje de prueba" });
     }
   });
+  
   
 /**
  * 🌐 INICIAR EL SERVIDOR

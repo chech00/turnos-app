@@ -21,3 +21,5 @@ const firebaseConfig = {
 
   window.auth = auth;
   window.db = db;
+
+  

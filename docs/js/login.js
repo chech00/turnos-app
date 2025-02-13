@@ -27,7 +27,9 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
       window.location.href = "index.html";
     } else {
       window.location.href = "user.html";
+      localStorage.setItem("lastPage", "user.html"); // Guardar la vista en el almacenamiento local
     }
+    
   } catch (error) {
     console.error("Error en el inicio de sesión:", error.message);
     errorMessageElement.style.display = "block";
